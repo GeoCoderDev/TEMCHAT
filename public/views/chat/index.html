@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAIN | TEMCHAT</title>
+    <link rel="stylesheet" href="../../Assets/CSS/chat.css">
+    <link rel="shortcut icon" href="../../Assets/Images/Logo con Borde mas Grueso con fondo.svg" type="image/x-icon">
+</head>
+<body>
+
+    <div id="main-interface">
+
+        <header>
+            
+            <div id="logo"></div>
+            <div id="texto-logo" alt="Logo de la Pagina TEMCHAT">TEMCHAT</div>
+
+        </header>
+
+        <div id="cont-chat-modalities">
+
+            <div id="cont-requests-for-chat" class="chat-modality">
+
+                <div class="modility-title">
+                    Solicitudes de chat<span class="icon-bubbles4"></span>
+                </div>
+
+                <div id="cont-request">
+
+                    <div class="request">
+                        
+                        <div class="cont-request-confirmation">
+                            <div class="username-request">JUANITOoooooooo</div>
+                            <div class="cont-resquest-buttons">
+                                <div class="request-button">ACEPTAR</div>
+                                <div class="request-button">RECHAZAR</div>
+                            </div>
+                        </div>
+
+                        <div class="time-request">100</div>
+
+                    </div>
+
+                    <div class="request">
+                        
+                        <div class="cont-request-confirmation">
+                            <div class="username-request">JUANITOoooooooo</div>
+                            <div class="cont-resquest-buttons">
+                                <div class="request-button">ACEPTAR</div>
+                                <div class="request-button">RECHAZAR</div>
+                            </div>
+                        </div>
+
+                        <div class="time-request">100</div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div id="random-chat" class="chat-modality"> 
+                <div class="modility-title">Chat aletorio</div>
+
+                
+
+            </div>
+
+            <div id="search-user-for-chat" class="chat-modality">
+                <div class="modility-title">Buscar usuario</div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div id="live-chat">
+        
+    </div>
+
+    
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../Assets/JavaScript/Funciones.js"></script>
+    <script src="../../Assets/JavaScript/Chat-main.js"></script>
+    <script src="../../Assets/JavaScript/delegacionDeEventos.js"></script>
+    <script src="../../Assets/JavaScript/animacionesJavaScript.js"></script>
+    <script src="../../Assets/JavaScript/ChatRequest(class).js" type="module"></script>
+    <script src="./../../Assets/JavaScript/trucoURL.js"></script>
+    <script src="./../../Assets/JavaScript/chatSocket.js" type="module"></script>
+
+</body>
+</html>
