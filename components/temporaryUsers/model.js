@@ -9,21 +9,21 @@ let temporaryUserSchema = new Shema({
         validate: (value) => (value!==null&&value!=="")
     },
 
-    // 2 Open Mode
+    // 2 Magnet Mode
     // 1 Disponible
     // 0 No-disponible
-    estado:{
+    state:{
         type: Number,
         require:true,
         enum:[0,1,2],
         default: 1
-    }
+    },
 
-    // socketConectionID:{
-    //     type: String,
-    //     require:true,
-    //     validate: (value) => (value!==null&&value!=="")
-    // }
+    socketConectionID:{
+        type: String,
+        require:false,
+        validate: (value) => (value!==null&&value!=="")
+    }
 
 })
 

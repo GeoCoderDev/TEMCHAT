@@ -2,8 +2,6 @@ const express = require('express');
 
 const controlador = require("./controller");
 
-const response = require('../../network/response');
-const { json } = require('body-parser');
 
 
 const router = express.Router();
@@ -16,7 +14,7 @@ router.get('/',(req,res)=>{
     const searchPattern = req.query.search;
     
     if(searchPattern){
-        controlador.getUsersByUsername(searchPattern)
+        controlador.getUsersByUsernamePattern(searchPattern)
         .then((usuarios)=>{
             if(!usuarios){
                 const errorUsuariosNoEncontrados = new Error('Usuarios no Encontrados');
@@ -48,8 +46,6 @@ router.get('/:username', (req, res) => {
             if (!usuarioEncontrado) {
                 const errorUsuarioNoEncontrado = new Error('El usuario solicitado no existe')
                 errorUsuarioNoEncontrado.name = 'USER-NOT-FOUND';
-                
-
                 // Si no se encuentra el usuario, respondemos con un código 404 y un objeto de error en JSON
                 res.status(404).json({ error: errorUsuarioNoEncontrado});
             } else {

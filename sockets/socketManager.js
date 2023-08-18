@@ -1,6 +1,8 @@
 const socketIo = require('socket.io');
 const uuid = require('uuid');
 const temporaryUsersController = require('../components/temporaryUsers/controller');
+const controller = require('../components/temporaryUsers/controller');
+
 
 /**
  * 
@@ -13,72 +15,74 @@ function socketManager(server) {
     io.on('connection',(socket) => {
 
         console.log('User connected:', socket.id);
+
+        socket.on('MY-USERNAME',(username)=>{            
+
+            let USER_DATA
+            controller.getUserByUsername(username)
+                .then((usuarioEncontrado)=>{
+
+                    USER_DATA = usuarioEncontrado;
+
+                    temporaryUsersController.setSocketIdConnection(USER_DATA._id,socket.id)
+                    .catch((e)=>{
+                        console.error(e)
+                    })
+    
+                    console.log(`${USER_DATA.username} conectado`);
         
-        socket.emit('RES',"HOLA CAPOOOOOO")
 
-        socket.on('USER-DATA',(data)=>{
+                    socket.on('GET-ALEATORY-USER',()=>{
 
-            const USER_DATA = JSON.parse(data);
-            const MY_ROOM_ID = USER_DATA._id;
+                        temporaryUsersController.getAleatoryUser(USER_DATA._id)
+                            .then((usuarioAleatorio)=>{
+                                socket.emit('TAKE-YOUR-ALEATORY-USER',JSON.stringify(usuarioAleatorio),JSON.stringify(USER_DATA));
+                            })
+                            .catch((e)=>{
+                                console.error(e)
+                            })
 
-            console.log(`${USER_DATA.username} esta en su sala ${USER_DATA._id}`);
+                        
+                    })
 
-            // EN CASO HAGAS UNA SOLICITUD A UN USUARIO BUSCADO
-            socket.on('TEMCHAT-REQUEST',(searchedUserData,type,waitTime)=>{
-                
-                // UNIENDOTE A LA SALA DE SOLICITUDES DEL USUARIO BUSCADO
-                socket.join(searchedUserData._id);                
+                    socket.on('TEMCHAT-REQUEST-FOR-ALEATORY-USER',()=>{
 
-                //ENVIANDO LA SOLICITUD... 
-                io.to(searchedUserData._id).emit('TEMCHAT-REQUEST-FOR-YOU',USER_DATA,roomID,type,waitTime);
-                
+                        temporaryUsersController.getAleatoryUser(USER_DATA._id)
+                            .then((usuarioAleatorio)=>{
+                                
+                                const Usuario_Aleatorio = usuarioAleatorio[0];
+                                socket.to(Usuario_Aleatorio.socketConectionID).emit('TEMCHAT-REQUEST-FOR-YOU',JSON.stringify(USER_DATA),"Random-Temchat");                                
+                                
 
-                // EN CASO SE ACEPTE TU SOLICITUD
-                socket.on('TEMCHAT-FOR-ME',(searchedUserData)=>{
-                    console.log(`${USER_DATA._id} hizo TEMCHAT con ${searchedUserData._id}`);
-                    
-                    
-
-                    // LOGICA DE CHAT
-
-
-                })
-
-                // EN CASO SE RECHAZE TU SOLICITUD
-                socket.on('TEMCHAT-REJECTED-FOR-ME',(strangerData)=>{
-                    
-                })
-
-            })
-
-            // CUANDO TODOS EN LA SALA RECIBEN UNA SOLICITUD
-            socket.on('TEMCHAT-REQUEST-FOR-YOU',(requesterUserData,roomID,type,waitTime)=>{
-
-                // COMO LA SOLICITUD SE ENVIARA PARA TODA LA SALA, IGNORAREMOS LA SOLICITUD
-                // EN CASO SE TRATE DEL DUEÑO
-                if(USER_DATA._id==requesterUserData._id) return;
-
-                // HACIENDO CONOCIMIENTO DE LA SOLICITUD AL CLIENTE
-                socket.emit('TEMCHAT-REQUEST-FOR-ME',requesterUserData,roomID,type,waitTime)
-
-                // EN CASO ACEPTES LA SOLICITUD
-                socket.on('TEMCHAT-REQUEST-ACEPPTED-FOR-YOU',()=>{
-                    io.to(MY_ROOM_ID).emit('TEMCHAT-REQUEST-ACEPPTED-FOR-YOU',()=>{
+                            })
+                            .catch((e)=>{
+                                console.error(e)
+                            })
 
                     })
+
+                    socket.on('TEMCHAT-ACCEPTED-FOR-YOU',()=>{
+
+                    })
+
+                    socket.on('TEMCHAT-REJECTED-FOR-YOU',()=>{
+
+                    })
+
+                    socket.on('CHANGE-STATE',(state)=>{
+                        temporaryUsersController.changeState(USER_DATA._id,state)
+                    })
+
+                    socket.on('disconnect', () => {
+                        temporaryUsersController.deleteTemporaryUser(USER_DATA._id);
+                    });
+
+                })                        
+                .catch((err)=>{
+                    console.error(err);
                 })
+                
 
-
-                //EN CASO RECHACES LA SOLICITUD
-                socket.on('')
-
-
-
-            })
-
-            socket.on('disconnect', () => {
-                temporaryUsersController.deleteTemporaryUser(USER_DATA._id);
-            });
     
         })
 

@@ -1,5 +1,5 @@
 
-const MaximaCantidadDeUsuariosConectados = 3;
+const MaximaCantidadDeUsuariosConectados = 10;
 const store = require('./store');
 
 async function addTemporaryUser(username){
@@ -88,17 +88,29 @@ async function getUserByUsername(username){
 }
 
 
-async function getAleatoryUser(){
-
-    // Importante: Reemplaza "nombreDeTuColección" con el nombre real de tu colección
-// db.nombreDeTuColección.aggregate([
-//     { $match: { estado: { $in: [1, 2] } } },  // Filtrar por estado 1 o 2
-//     { $sample: { size: 1 } }  // Seleccionar un documento aleatorio de los resultados
-//   ])
-
-
+async function getAleatoryUser(idExcept){
+    try {
+        return await store.getAleatoryUser(idExcept);
+    } catch (error) {
+        throw error
+    }
 }
 
+async function setSocketIdConnection(id,socketConectionID){
+    try {
+        store.setSocketIdConnection(id,socketConectionID);
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function changeState(id,state){
+    try {
+        store.setState(id,state)
+    } catch (error) {
+        throw error;
+    }
+}
 
 function hasOnlySpaces(string) {
     const regex = /^\s*$/; // Expresión regular que coincide con espacios en blanco en un string
@@ -109,5 +121,8 @@ module.exports = {
     addTemporaryUser: addTemporaryUser,
     deleteTemporaryUser: deleteTemporaryUser,
     getUsersByUsernamePattern: getUsersByUsernamePattern,
-    getUserByUsername: getUserByUsername 
+    getUserByUsername: getUserByUsername,
+    getAleatoryUser: getAleatoryUser,
+    setSocketIdConnection: setSocketIdConnection,
+    changeState: changeState
 }

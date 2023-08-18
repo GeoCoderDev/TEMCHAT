@@ -54,12 +54,59 @@ async function getUserByUsername(username){
 
 }
 
+
+
+async function setSocketIdConnection(id, socketConectionID){
+
+    try{        
+        console.log("HOLA")
+        await temporaryUser.updateOne({_id: id},{$set:{socketConectionID: socketConectionID}})
+    }catch(error){
+        throw error;
+    }
+
+}
+
+async function setState(id, state){
+    try {
+        
+        await temporaryUser.updateOne({_id: id}, { $set:{state: state} })
+
+    } catch (error) {
+        throw error
+    }
+}
+
+async function getAleatoryUser(idExcept){
+
+    try {
+        
+        return await temporaryUser.aggregate([
+            { $match: { _id: { $ne: idExcept } } }, // Excepcion para el idExcept
+            { $match: { state: { $in: [1, 2] } } }, // Filtrar por estado 1 o 2
+            { $sample: { size: 1 } } // Seleccionar un documento aleatorio de los resultados
+        ]);
+        
+        
+    } catch (error) {
+        throw error;
+    }
+        
+
+
+
+}
+
+
 module.exports = {
     add: addTemporaryUser,
     getUsersAmount: getUsersAmount,
     getUsersByUsernamePattern: getUsersByUsernamePattern,
     remove: deleteTemporaryUser,
-    getUserByUsername: getUserByUsername
+    getUserByUsername: getUserByUsername,
+    setSocketIdConnection: setSocketIdConnection,
+    setState: setState,
+    getAleatoryUser: getAleatoryUser
 }
 
 

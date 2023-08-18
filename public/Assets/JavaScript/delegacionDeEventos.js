@@ -14,7 +14,7 @@ function agregarEventoClick(querySelectorOElementoHTML,callback){
 }
 
 document.addEventListener('click',(e)=>{
-
+    e.stopPropagation();
     mapaDeEventosClick.forEach((Evento)=>{
         if(e.target.matches(((typeof Evento.selectorOElementoHTML==="string")?Evento.selectorOElementoHTML:"body"))
             ||e.target==Evento.selectorOElementoHTML){

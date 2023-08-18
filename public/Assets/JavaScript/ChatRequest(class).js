@@ -13,7 +13,7 @@ export class ChatRequest{
         if(!userData._id) return null;
 
         const componenteHTML = document.createElement('div');
-            componenteHTML.id = userData._id;
+            componenteHTML.id = "E-" + userData._id;
             componenteHTML.classList.add('request');
             componenteHTML.style.display = "none";
         CONT_REQUEST.insertAdjacentElement('afterbegin',componenteHTML)
