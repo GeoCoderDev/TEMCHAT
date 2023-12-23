@@ -280,3 +280,8 @@ function calcularPorcentajeConRespectoAlPadre(elementoHTML, tipo, medidaCSS) {
 
 }
 
+function reemplazarEspaciosConPuntos(cadena) {
+    // Utiliza el método replace con una expresión regular para reemplazar espacios por puntos
+    const cadenaTransformada = cadena.replace(/ /g, '.');
+    return cadenaTransformada;
+  }

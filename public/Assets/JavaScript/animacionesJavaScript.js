@@ -2,20 +2,21 @@
 /**
  * 
  * @param {HTMLElement} HTMLelement 
- * @param {*} duracionSegundos 
- * @param {*} horizontalmente 
- * @param {*} opacityOriginal 
- * @param {*} easing 
- * @param {*} permanent 
+ * @param {Number} duracionSegundos 
+ * @param {Boolean} horizontalmente 
+ * @param {Number} opacityOriginal 
+ * @param {String} easing 
+ * @param {Boolean} permanent
+ * @param {HTMLElement} padreHTML 
  * @returns 
  */
-function desvanecerElemento(HTMLelement,duracionSegundos,horizontalmente=false,opacityOriginal=1,easing="ease-in",permanent=true){
+function desvanecerElemento(HTMLelement,duracionSegundos,horizontalmente=false,opacityOriginal=1,easing="ease-in",permanent=true, padreHTML=HTMLelement.parentNode){
 
     let displayOriginal = window.getComputedStyle(HTMLelement).display;
 
     if(horizontalmente){
         let anchoOriginal = HTMLelement.offsetWidth;
-        let anchoOriginalEnPorcentaje = roundToDecimals((anchoOriginal/HTMLelement.parentNode.clientWidth)*100,2);
+        let anchoOriginalEnPorcentaje = roundToDecimals((anchoOriginal/padreHTML.clientWidth)*100,2);
 
         const FADE_HORIZONTAL = HTMLelement.animate([
             {opacity:opacityOriginal}, //0%
@@ -35,7 +36,7 @@ function desvanecerElemento(HTMLelement,duracionSegundos,horizontalmente=false,o
     }else{        
         
         let altoOriginal = HTMLelement.offsetHeight;
-        let altoOriginalEnPorcentaje = (altoOriginal/HTMLelement.parentNode.clientHeight)*100;
+        let altoOriginalEnPorcentaje = (altoOriginal/padreHTML.clientHeight)*100;
 
 
         const FADE_VERTICAL = HTMLelement.animate([
@@ -141,8 +142,25 @@ function desvanecerElementoConScale(HTMLelement,duracionSegundos,permanent=true)
 }
 
 
+/**
+ * 
+ * @param {HTMLElement} HTMLelement 
+ * @param {Number} duracionSegundos 
+ * @param {String} displayOriginal 
+ * @param {Boolean} permanent 
+ * @returns 
+ */
 
-function aparecerElementoConScale(HTMLelement,duracionSegundos,displayOriginal,permanent=true){
+/**
+ * 
+ * @param {HTMLElement} HTMLelement 
+ * @param {Number} duracionSegundos 
+ * @param {String} displayOriginal 
+ * @param {String} easing 
+ * @param {Boolean} permanent 
+ * @returns 
+ */
+function aparecerElementoConScale(HTMLelement,duracionSegundos,displayOriginal,easing="linear",permanent=true){
 
     const APPEAR_SCALE = HTMLelement.animate(
         [
@@ -152,7 +170,7 @@ function aparecerElementoConScale(HTMLelement,duracionSegundos,displayOriginal,p
         {
             iterations:1,
             duration: duracionSegundos * 1000,
-            easing:"linear",
+            easing:easing,
             fill: (permanent)?'forwards':'none'
         })
 

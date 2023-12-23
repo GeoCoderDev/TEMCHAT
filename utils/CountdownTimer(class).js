@@ -1,8 +1,7 @@
 
 // POR EL MOMENTO SOLO SOPORTA EN SEGUNDOS ENTEROS
 
-
-export class CountdownTimer{
+class CountdownTimer{
 
     /**
      * 
@@ -16,7 +15,7 @@ export class CountdownTimer{
      * @param {Map} styleMapForTextFinal 
      * @param {Number} playBackRate
      */
-    constructor(segundos,playBackRate = 1,include0=true, ADDITIONAL_SECONDS=undefined, elementoHTML=undefined ,animation=false,duracionDeAnimacionEnSegundos=undefined, textoFinal=undefined, styleMapForTextFinal=undefined){
+    constructor(segundos,playBackRate = 1,include0=true, ADDITIONAL_SECONDS=0.3, elementoHTML=undefined ,animation=false,duracionDeAnimacionEnSegundos=0.3, textoFinal=undefined, styleMapForTextFinal=undefined){
 
         this.segundos = segundos.toFixed(0);
         this.elementoHTML = elementoHTML
@@ -41,7 +40,7 @@ export class CountdownTimer{
             const ADDITIONAL_SECONDS = this.ADDITIONAL_SECONDS;
             const styleMapForTextFinal = this.styleMapForTextFinal;
             const playBackRate = this.playBackRate;
-            
+
             function countDownRECURSIVO(){
                 
                 if(contenedorSegundos){
@@ -56,6 +55,7 @@ export class CountdownTimer{
                         })            
                         
                     }
+
                     
                     contenedorSegundos.innerText = tiempoInicial;
                     
@@ -78,7 +78,7 @@ export class CountdownTimer{
 
                             for (const [propertyName, value] of styleMapForTextFinal.entries()) {
                                 estilos += `${propertyName}: ${value};`
-                              }
+                            }
 
                             estilos += "}";
 
@@ -86,7 +86,7 @@ export class CountdownTimer{
                                                           
                         } 
                                                 
-                        
+                                             
                         contenedorSegundos.innerText = textoFinal;
 
                         aparecerElementoConScale(contenedorSegundos,duracionDeAnimacionEnSegundos,"block").finished
@@ -126,3 +126,6 @@ export class CountdownTimer{
 
 
 }
+
+
+module.exports = CountdownTimer;
