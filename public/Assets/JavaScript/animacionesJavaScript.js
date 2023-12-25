@@ -258,21 +258,22 @@ function aparecerElementoConScale(
 
 class AnimacionAparicionYDesaparicion {
   #promiseFinishedResolve;
-
+  #promiseAparicionResolve;
   /**
    *
    * @param {HTMLElement} elementoHTML
    * @param {number} durationSegundos
    * @param {string} dimensionOriginal
    * @param {string[]} clasesARespetar
+   * @param {Map} estilosCSSAparicion
    * @param {boolean} horizontalmente
    * @param {Promise | undefined} promesaParaDesaparecer
    */
   constructor(
     elementoHTML,
     durationSegundos,
-    dimensionOriginal,
     clasesARespetar = [],
+    estilosCSSAparicion = new Map(),
     horizontalmente = true,
     promesaParaDesaparecer
   ) {
@@ -287,10 +288,7 @@ class AnimacionAparicionYDesaparicion {
     clasesAEliminar.forEach((clase) =>
       this.elementoHTML.classList.remove(clase)
     );
-
-    this.elementoHTML.style[`${horizontalmente ? "width" : "height"}`] =
-      dimensionOriginal;
-    this.dimensionOriginal = dimensionOriginal;
+    
     this.Nombre_Clase_Animacion =
       this.elementoHTML.tagName[0] + "-" + generarIdUnico(3);
     this.estilosCssAdicionales;
@@ -330,6 +328,14 @@ class AnimacionAparicionYDesaparicion {
         anchoTotalDeLosOtrosElementos) /
       (this.elementoHTML.parentElement.children.length + 1);
 
+    let estilosAparicion = "";
+
+    estilosCSSAparicion.forEach((valor, clave) => {
+      estilosAparicion += `${clave}: ${valor};`;
+    });
+
+    console.log(estilosAparicion)
+
     this.estilosCssAdicionales = insertarReglasCSSAdicionales(`
           
         @keyframes A-${this.Nombre_Clase_Animacion}{
@@ -357,28 +363,28 @@ class AnimacionAparicionYDesaparicion {
                   }
   
               }
+
               75% {          
                 position: relative;
                 opacity: 0;
                 top: 0;
                 margin: 0 0;
-                ${horizontalmente ? "width" : "height"}: ${dimensionOriginal};
+              
               }
+
               95% {
                 position: relative;
                 opacity: 1;
                 top: 0;                    
                 margin: 0 0;
-                ${horizontalmente ? "width" : "height"}: ${dimensionOriginal};
+                ${estilosAparicion}
               }  
               100%{                
                 position: relative;
                 opacity: 1;
                 top: 0;                    
-                margin: 0 0;
-                ${
-                  horizontalmente ? "width" : "height"
-                }: ${dimensionOriginal};                    
+                margin: 0 0;         
+                ${estilosAparicion}                   
               }
         }
   
@@ -399,8 +405,13 @@ class AnimacionAparicionYDesaparicion {
       this.#promiseFinishedResolve = resolve;
     });
 
+    this.aparicionFinalizada = new Promise((resolve, reject)=>{
+        this.#promiseAparicionResolve = resolve;
+    })
+
     this.elementoHTML.addEventListener("animationiteration", () => {
       this.pausar();
+      this.#promiseAparicionResolve();
     });
 
     this.elementoHTML.addEventListener(

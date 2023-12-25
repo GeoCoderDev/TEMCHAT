@@ -16,8 +16,11 @@ export class ChatRequest {
     componenteHTML.classList.add("request");
     // Para evitar conflictos de referencia por usar el mismo ID en
     // Diferentes elementos HTML
-    componenteHTML.classList.add(`R-${userData._id}`);
-    // componenteHTML.style.display = "none";
+
+    this.nombreClaseAdicional = `R-${userData._id}`;
+
+    componenteHTML.classList.add(this.nombreClaseAdicional);
+
     componenteHTML.style.position = "absolute";
     componenteHTML.style.opacity = 0;
     
@@ -39,16 +42,15 @@ export class ChatRequest {
       ? `<div class="time-request">${waitTime}</div>`
       : "";
 
-    this.nombreClaseAdicional =  `.R-${userData._id}`;
-    this.componenteHTML = document.querySelector(this.nombreClaseAdicional);
+    this.componenteHTML = document.querySelector(`.${this.nombreClaseAdicional}`);
 
     this.Promise = new Promise((resolve, reject) => {
       this.cancelRequest = reject;
       // BOTON ACEPTAR
       this.buttonAcceptEventID = delegarEvento(
         "click",
-        `.R-${userData._id} .request-button:nth-child(1)`,
-        () => {          
+        `.${this.nombreClaseAdicional} .request-button:nth-child(1)`,
+        () => {                    
           this.desvanecerElemento();
           resolve();
         }
@@ -57,16 +59,16 @@ export class ChatRequest {
       // BOTON RECHAZAR
       this.buttonRejectEventID = delegarEvento(
         "click",
-        `.R-${userData._id} .request-button:nth-child(2)`,
+        `.${this.nombreClaseAdicional} .request-button:nth-child(2)`,
         () => {
-          this.desvanecerElemento();
+          this.desvanecerElemento()
           reject();
         }
       );
 
       if (waitTime) {
         const contenedorConteo = document.querySelector(
-          `.R-${userData._id} .time-request`
+          `.${this.nombreClaseAdicional} .time-request`
         );
         const cuentaRegresiva = new CountdownTimer(waitTime, contenedorConteo);
         cuentaRegresiva.start().then(() => {
@@ -81,9 +83,10 @@ export class ChatRequest {
       }
     });
 
+    ChatRequest.allRequests.set(userData._id, this);
+    
     this.#desplegarElemento();
 
-    ChatRequest.allRequests.set(userData._id,this);
 
   }
 
@@ -98,7 +101,9 @@ export class ChatRequest {
     //   OPACITY_REQUEST
     // );
 
-    this.animacion = new AnimacionAparicionYDesaparicion(this.componenteHTML,0.5,"85%",["request", this.nombreClaseAdicional]);
+    this.animacion = new AnimacionAparicionYDesaparicion(this.componenteHTML,0.5,["request", this.nombreClaseAdicional], new Map([["opacity", 0.5]]),false);
+
+    this.animacion.finished.then(()=>this.componenteHTML.remove());
 
     this.animacion.iniciar();
 
@@ -112,7 +117,8 @@ export class ChatRequest {
     ChatRequest.allRequests.delete(this.requesterUserID);
 
     // INICIAR PARA DESAPARECER
-    this.animacion.iniciar();
+    this.animacion.iniciar();    
+
     return this.animacion.finished;
 
   }

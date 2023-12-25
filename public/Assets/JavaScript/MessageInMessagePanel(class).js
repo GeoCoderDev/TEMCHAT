@@ -5,6 +5,9 @@ import { UserFound } from "./UserFound(Class).js";
 const MESSAGE_PANEL = document.getElementById("messages-panel");
 
 export class MessageInMessagePanel {
+  
+  animacion;
+  
   /**
    *
    * @param {string} message
@@ -25,8 +28,9 @@ export class MessageInMessagePanel {
   ) {
     const mensajeHTML = document.createElement("div");
     mensajeHTML.classList.add("mesagge-in-panel");
-    mensajeHTML.style.display = "none";
-    mensajeHTML.innerText = message;
+    mensajeHTML.style.position = "absolute";
+    mensajeHTML.style.opacity = 0;
+    mensajeHTML.insertAdjacentText("afterbegin", message)
 
     let dotsAnimationStart;
     let dotsAnimationID;
@@ -99,15 +103,11 @@ export class MessageInMessagePanel {
      * @param {0 | 1} state 0 para cuando se ha rechazado y 1 para cuando se acepto la solicitud
      */
     const finalizarMensaje = (state = undefined) => {
-      desvanecerElemento(
-        document.querySelector(`#${MESSAGE_PANEL.id} .mesagge-in-panel`),
-        0.35,
-        false,
-        1,
-        "linear",
-        true,
-        MESSAGE_PANEL
-      ).animacionFinalizada.then(() => {
+      
+      // Reanudando para desaparecer
+      this.animacion.iniciar();
+      
+      this.animacion.finished.then(() => {
         resolveFinish();
         UserFound.userFoundRequestedCurrent.estadoInicial();
         MessageInMessagePanel.currentMessage = undefined;
@@ -129,17 +129,19 @@ export class MessageInMessagePanel {
     // una solicitud sin que el usuario haga click en cancelar
     this.forceFinish = finalizarMensaje;
 
-    if (!duration) {
-      // SI NO HAY DURACION
-      MESSAGE_PANEL.appendChild(mensajeHTML);
+    MESSAGE_PANEL.appendChild(mensajeHTML);
 
-      aparecerElemento(
-        mensajeHTML,
-        0.35,
-        "100%",
-        "block",
-        true
-      ).animacionFinalizada.then(() => {
+    this.animacion = new AnimacionAparicionYDesaparicion(
+      mensajeHTML,
+      0.35,
+      ["mesagge-in-panel"]
+    )
+
+    if (!duration) {
+      // SI NO HAY DURACION      
+
+      this.animacion.iniciar();      
+      this.animacion.aparicionFinalizada.then(() => {
 
         if(dotsAnimationStart){
           dotsAnimationID = dotsAnimationStart();
@@ -164,8 +166,8 @@ export class MessageInMessagePanel {
 
     MESSAGE_PANEL.appendChild(mensajeHTML);
 
-    aparecerElemento(mensajeHTML, 0.35, "100%", "block", true)
-      .animacionFinalizada.then(() => {
+      this.animacion.iniciar();
+      this.animacion.aparicionFinalizada.then(() => {
 
         if(dotsAnimationStart){
           dotsAnimationID = dotsAnimationStart();
