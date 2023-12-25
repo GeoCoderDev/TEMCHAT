@@ -5,6 +5,9 @@ const MARGEN_REQUEST = "0 0 max(1.7vh,1vw) 0";
 const OPACITY_REQUEST = 0.5;
 
 export class ChatRequest {
+
+  animacion;
+
   constructor(userData, waitTime) {
     if (!userData._id) return null;
 
@@ -14,7 +17,11 @@ export class ChatRequest {
     // Para evitar conflictos de referencia por usar el mismo ID en
     // Diferentes elementos HTML
     componenteHTML.classList.add(`R-${userData._id}`);
-    componenteHTML.style.display = "none";
+    // componenteHTML.style.display = "none";
+    componenteHTML.style.position = "absolute";
+    componenteHTML.style.opacity = 0;
+    
+
     CONT_REQUEST.insertAdjacentElement("afterbegin", componenteHTML);
 
     componenteHTML.innerHTML = `
@@ -32,7 +39,8 @@ export class ChatRequest {
       ? `<div class="time-request">${waitTime}</div>`
       : "";
 
-    this.componenteHTML = document.querySelector(`.R-${userData._id}`);
+    this.nombreClaseAdicional =  `.R-${userData._id}`;
+    this.componenteHTML = document.querySelector(this.nombreClaseAdicional);
 
     this.Promise = new Promise((resolve, reject) => {
       this.cancelRequest = reject;
@@ -62,7 +70,7 @@ export class ChatRequest {
         );
         const cuentaRegresiva = new CountdownTimer(waitTime, contenedorConteo);
         cuentaRegresiva.start().then(() => {
-          this.desvanecerElemento().animacionFinalizada.then(() => {
+          this.desvanecerElemento().then(() => {
             // SOLO SE RECHAZARA LA PROMESA CUANDO LA ANIMACION FINALIZE
             // LO CUAL HARA QUE NO SE EMITA EL SOCKET DE TEMCHAT
             // A NO SER QUE EL USUARIO HAGA CLIC EN ACEPTAR
@@ -80,15 +88,20 @@ export class ChatRequest {
   }
 
   #desplegarElemento() {
-    aparecerElemento(
-      this.componenteHTML,
-      0.5,
-      ALTO_REQUEST,
-      "flex",
-      false,
-      MARGEN_REQUEST,
-      OPACITY_REQUEST
-    );
+    // aparecerElemento(
+    //   this.componenteHTML,
+    //   0.5,
+    //   ALTO_REQUEST,
+    //   "flex",
+    //   false,
+    //   MARGEN_REQUEST,
+    //   OPACITY_REQUEST
+    // );
+
+    this.animacion = new AnimacionAparicionYDesaparicion(this.componenteHTML,0.5,"85%",["request", this.nombreClaseAdicional]);
+
+    this.animacion.iniciar();
+
   }
 
   desvanecerElemento() {
@@ -98,7 +111,9 @@ export class ChatRequest {
 
     ChatRequest.allRequests.delete(this.requesterUserID);
 
-    return desvanecerElemento(this.componenteHTML, 0.4, false, OPACITY_REQUEST,undefined,undefined,CONT_REQUEST);
+    // INICIAR PARA DESAPARECER
+    this.animacion.iniciar();
+    return this.animacion.finished;
 
   }
 
