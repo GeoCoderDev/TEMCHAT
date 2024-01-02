@@ -1,56 +1,112 @@
+const LOGO_TEMCHAT_HTML = document.getElementById("logo-temchat");
+const MENSAJE_USUARIO = document.getElementById("mensaje-user");
+const LOADER_INGRESO = document.getElementById("loader-ingreso");
 
-function eliminarUsuarioAnteriorDeLaBaseDeDatos(){
+function eliminarUsuarioAnteriorDeLaBaseDeDatos() {
+  if (!sessionStorage.getItem("USER-DATA")) return;
 
-    if(!sessionStorage.getItem('USER-DATA')) return;
+  const LAST_DATA_USER = JSON.parse(sessionStorage.getItem("USER-DATA"));
 
-    const LAST_DATA_USER = JSON.parse(sessionStorage.getItem('USER-DATA'));
-    
-    fetch(`/users/${LAST_DATA_USER._id}`,{method:"DELETE"})
-        .catch((e)=>{
-            console.error(e);
-        })
-
+  fetch(`/users/${LAST_DATA_USER._id}`, { method: "DELETE" }).catch((e) => {
+    console.error(e);
+  });
 }
 
-function eliminarDatosPersistentes(){
+function eliminarDatosPersistentes() {
+  // PROBANDO A ELIMINAR MIS DATOS DE LA BASE DE DATOS POR PRECAUCION
+  eliminarUsuarioAnteriorDeLaBaseDeDatos();
 
-    // PROBANDO A ELIMINAR MIS DATOS DE LA BASE DE DATOS POR PRECAUCION
-    eliminarUsuarioAnteriorDeLaBaseDeDatos();
-
-    // ELIMINANDO MIS DATOS DE USUARIO ANTERIORES
-    sessionStorage.removeItem('USER-DATA');
-
+  // ELIMINANDO MIS DATOS DE USUARIO ANTERIORES
+  sessionStorage.removeItem("USER-DATA");
 }
 
-window.addEventListener('load',()=>{
+let altoPantallaVisible;
+const variableName = "--Alto-Pantalla-Visible";
 
-    eliminarDatosPersistentes();
+window.addEventListener("load", () => {
+  eliminarDatosPersistentes();
 
-    const usernameInput = document.getElementById('username');
+  // Seteando propiedad de alto pantalla visible
+  altoPantallaVisible =
+    window.visualViewport[
+      window.matchMedia("screen and(orientation: landscape)").matches
+        ? "width"
+        : "height"
+    ] + "px";
 
-    document.getElementById('KJ').addEventListener('click',()=>{
+  document.documentElement.style.setProperty(variableName, altoPantallaVisible);
 
-        // CONSULTANDO SI EXISTE EL USUARIO INGRESADO
-        fetch(`/users/${usernameInput.value}`,{method:'GET'})
-            .then((res)=>{
-                return res.json();
-            })
-            .then((data)=>{
-                console.log(data);
-                if(data.error?.name=='USER-NOT-FOUND'){
-                    window.location.href = `/chat?username=${usernameInput.value}`;
-                }                                                     
-            })           
+  const Entry_Form = document.forms["entry-form"];
+  const usernameInput = Entry_Form.username;
 
-    })
+  Entry_Form.addEventListener("submit", async (e) => {
+    try {
+      e.preventDefault();
 
-})
+      if (usernameInput.value.trim() === "") {
+        MENSAJE_USUARIO.innerText = "Nombre de Usuario no valido";
+        return MENSAJE_USUARIO.classList.add("mostrar-block");
+      }
 
+      LOADER_INGRESO.classList.add("mostrar-block");
 
-window.addEventListener('popstate',()=>{
-    eliminarDatosPersistentes();
-})
+      // CONSULTANDO SI EXISTE EL USUARIO INGRESADO
+      let res = await fetch(`/users/${usernameInput.value}`, { method: "GET" });
 
-document.addEventListener('visibilitychange',()=>{
-    eliminarDatosPersistentes();
-})
+      let data = await res.json();
+
+      if (data.error?.name == "USER-NOT-FOUND") {
+        return (window.location.href = `/chat?username=${usernameInput.value}`);
+      }
+
+      MENSAJE_USUARIO.innerText = "Usuario Temporal con ese nombre ya existe";
+      return MENSAJE_USUARIO.classList.add("mostrar-block");
+
+    } catch (error) {
+      console.error(error);
+
+    } finally {
+      LOADER_INGRESO.classList.remove("mostrar-block");
+    }
+  });
+
+  usernameInput.addEventListener("input", () => {
+    return MENSAJE_USUARIO.classList.remove("mostrar-block");
+  });
+
+  //   LOGO_TEMCHAT_HTML.addEventListener("animationiteration",()=>{
+  //     LOGO_TEMCHAT_HTML.style.animationPlayState = "paused"
+  //     setTimeout(()=>{
+  //         LOGO_TEMCHAT_HTML.style.animationPlayState = "running";
+  //     }, 2000);
+  //   });
+});
+
+window.addEventListener("resize", () => {
+  altoPantallaVisible =
+    window.visualViewport[
+      window.matchMedia("screen and(orientation: landscape)").matches
+        ? "width"
+        : "height"
+    ] + "px";
+
+  if (parseFloat(window.innerHeight) > parseFloat(altoPantallaVisible)) {
+    document.documentElement.style.setProperty(
+      variableName,
+      window.innerHeight + "px"
+    );
+  } else {
+    document.documentElement.style.setProperty(
+      variableName,
+      altoPantallaVisible
+    );
+  }
+});
+
+window.addEventListener("popstate", () => {
+  eliminarDatosPersistentes();
+});
+
+document.addEventListener("visibilitychange", () => {
+  eliminarDatosPersistentes();
+});

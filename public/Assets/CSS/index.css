@@ -1,12 +1,175 @@
-*{
-    margin: 0;
-    padding: 0;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@100;300;400;500;700;800;900&display=swap");
+
+:root {
+  --color-logo: rgb(51, 82, 199);
+  --color-fondo-pagina: white;
+  --color-fondo-pagina2: rgb(248, 245, 245);
+  --ancho-scrollbar: 0.5vw;
+  --safe-area-inset-top: env(safe-area-inset-top, 0);
 }
 
-body{    
-    height: 100vh;
-    background-color: rgb(104,174,207);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Roboto, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+}
+
+body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#contenedor-todo {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid #000; */
+  height: var(--Alto-Pantalla-Visible);
+}
+
+#contenedor-todo img{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    /* filter: opacity(0.2); */
+    filter: hue-rotate(315deg) opacity(0.1);
+    object-fit: cover;
+    
+}
+
+form[name="entry-form"] {
+  height: 65%;
+  width: 300px;
+  /* border: 1px solid #000; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+form[name="entry-form"] #cont-presentacion {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 135px;
+  /* border: 1px solid #000; */
+}
+
+form[name="entry-form"] #cont-presentacion h1 {
+  font-size: 1.5rem;
+  color: var(--color-logo);
+}
+
+form[name="entry-form"] #cont-presentacion #logo-temchat {
+  background-image: url("../../Assets//Images/Logo\ TEMCHAT\ sin\ fondo.svg");
+  height: 80px;
+  width: 80px;
+  background-size: contain;
+  /* border: 1px solid #111; */
+  background-position: center;
+}
+
+form[name="entry-form"] label[for] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+form[name="entry-form"] input[type="text"] {
+  width: 100%;
+  font-size: 0.9rem;
+  padding: 10px 5px;
+  outline: none;
+  margin-top: 8px;
+  border: none;
+  border-bottom: 2px solid black;
+  text-overflow: ellipsis;
+  background-color: transparent;
+}
+
+form[name="entry-form"] #mensaje-user{
+  font-size: 0.85rem;
+  color: rgb(229, 19, 19);
+  font-weight: bolder;
+  display: none;
+  width: 100%;
+  margin-top: 7.5px;
+  text-align: center;
+}
+
+form[name="entry-form"] button[type="submit"] {
+  position: relative;
+  padding: 10px 20px;
+  width: 100%;
+  border: none;
+  color: white;
+  background-color: var(--color-logo);
+  border-radius: max(0.4vw, 0.4vh);
+  font-weight: bolder;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* letter-spacing: 0.1rem; */
+}
+
+form[name="entry-form"] button[type="submit"] #loader-ingreso{
+  background-image: url("../../Assets/Images/Loader-Ingreso.gif");
+
+  width: 25px;
+  height: 25px;
+  /* border: 1px solid #eee; */
+  display: none;
+  margin-left: 2px;
+}
+
+@media screen and (orientation: landscape) {
+  @media screen and (height < 320px) {
+    form[name="entry-form"] #cont-presentacion {
+      height: 100px;
+    }
+
+    form[name="entry-form"] #cont-presentacion #logo-temchat {
+      height: 55px;
+      width: 55px;
+    }
+  }
+}
+
+@media screen and (orientation: portrait) {
+  @media screen and (width<350px) {
+    form[name="entry-form"] {
+      width: 92%;      
+    }
+  }
+}
+
+@media (min-aspect-ratio: 2.4/1) {
+  form[name="entry-form"] {
+    height: 100%;
+  }
+}
+
+.mostrar-block{
+  display: block !important;
 }

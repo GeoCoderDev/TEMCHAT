@@ -40,10 +40,24 @@ window.addEventListener("beforeunload", () => {
   socket.emit("DELETE-USER-FROM-DATABASE");
 });
 
+let altoPantallaVisible;
+const variableName = "--Alto-Pantalla-Visible";
+
 window.addEventListener("load", () => {
-  const variableName = "--Alto-Pantalla-Visible";
-  const variableValue = window.visualViewport.height + "px";
-  document.documentElement.style.setProperty(variableName, variableValue);
+  altoPantallaVisible = window.visualViewport.height + "px";
+  document.documentElement.style.setProperty(variableName, altoPantallaVisible);
+});
+
+window.addEventListener("resize",()=>{
+
+  if(!altoPantallaVisible) return;
+
+  if(parseFloat(window.innerHeight) > parseFloat(altoPantallaVisible)){
+    document.documentElement.style.setProperty(variableName, window.innerHeight + "px");
+  }else{
+    document.documentElement.style.setProperty(variableName, altoPantallaVisible);
+  }
+
 });
 
 export function cerrarPuertas(duracionSegundos, easing = "ease-in") {

@@ -13,6 +13,7 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  object-fit: cover;
 }
 
 :root {
@@ -499,8 +500,7 @@ header {
 }
 
 .TEMCHAT {
-  display: flex;
-  display: none;
+  display: block;
   align-items: center;
   justify-content: space-evenly;
   background-color: red;
@@ -508,6 +508,9 @@ header {
   height: 100%;
   border: 1px solid black;
   overflow: hidden;
+  position: absolute;
+  opacity: 0;
+  top: -9999px;
 }
 
 #chat-header {
@@ -559,6 +562,11 @@ header {
     rgb(181, 248, 255),
     rgb(255, 255, 255)
   );
+  background-image: url("../../Assets/Images/Fondo\ Chats.webp");
+  /* object-fit: contain; */
+  background-size: cover;
+  aspect-ratio: 16 / 9; /* Puedes ajustar la relación de aspecto según tus necesidades */
+
   /* background: repeating-conic-gradient(from 15deg,rgb(180, 92, 92) 0%, rgb(60, 182, 95) 5%,transparent 5%, transparent 40%, rgb(35,195,189)); */
 
   display: flex;
@@ -772,6 +780,8 @@ header {
 
   #cont-live-chat {
     height: var(--Alto-Pantalla-Visible);
+    /* align-items: stretch; */
+
   }
 
   .chat-modality {
@@ -794,6 +804,7 @@ header {
 
   .TEMCHAT {
     width: 100%;
+    max-height: 100vh;
   }
 
   #chat-header {

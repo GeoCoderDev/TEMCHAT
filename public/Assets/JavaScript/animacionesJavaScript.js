@@ -222,40 +222,6 @@ function desvanecerElementoConScale(
  * @returns
  */
 
-/**
- *
- * @param {HTMLElement} HTMLelement
- * @param {Number} duracionSegundos
- * @param {String} displayOriginal
- * @param {String []} clasesARespetar
- * @param {String} easing
- * @param {Boolean} permanent
- * @returns
- */
-function aparecerElementoConScale(
-  HTMLelement,
-  duracionSegundos,
-  displayOriginal,
-  clasesARespetar = [],
-  easing = "linear",
-  permanent = true
-) {
-  const APPEAR_SCALE = HTMLelement.animate(
-    [
-      { scale: 0, display: displayOriginal }, //0%
-      { scale: 1, display: displayOriginal },
-    ],
-    {
-      iterations: 1,
-      duration: duracionSegundos * 1000,
-      easing: easing,
-      fill: permanent ? "forwards" : "none",
-    }
-  );
-
-  return APPEAR_SCALE;
-}
-
 class AnimacionAparicionYDesaparicion {
   #promiseFinishedResolve;
   #promiseAparicionResolve;
@@ -288,7 +254,7 @@ class AnimacionAparicionYDesaparicion {
     clasesAEliminar.forEach((clase) =>
       this.elementoHTML.classList.remove(clase)
     );
-    
+
     this.Nombre_Clase_Animacion =
       this.elementoHTML.tagName[0] + "-" + generarIdUnico(3);
     this.estilosCssAdicionales;
@@ -334,7 +300,7 @@ class AnimacionAparicionYDesaparicion {
       estilosAparicion += `${clave}: ${valor};`;
     });
 
-    console.log(estilosAparicion)
+    console.log(estilosAparicion);
 
     this.estilosCssAdicionales = insertarReglasCSSAdicionales(`
           
@@ -390,14 +356,13 @@ class AnimacionAparicionYDesaparicion {
   
         .${this.Nombre_Clase_Animacion}{
             position: absolute;
-            top: -100%;
+            top: -9999px;
             animation: A-${
               this.Nombre_Clase_Animacion
             } ${durationSegundos}s linear;
             animation-iteration-count: 2;
             animation-direction: alternate;
             opacity: 0;
-            display:block;
         }  
       `);
 
@@ -405,9 +370,9 @@ class AnimacionAparicionYDesaparicion {
       this.#promiseFinishedResolve = resolve;
     });
 
-    this.aparicionFinalizada = new Promise((resolve, reject)=>{
-        this.#promiseAparicionResolve = resolve;
-    })
+    this.aparicionFinalizada = new Promise((resolve, reject) => {
+      this.#promiseAparicionResolve = resolve;
+    });
 
     this.elementoHTML.addEventListener("animationiteration", () => {
       this.pausar();
@@ -447,6 +412,157 @@ class AnimacionAparicionYDesaparicion {
     if (this.estilosCssAdicionales)
       eliminarReglasCSSAdicionales(this.estilosCssAdicionales);
     this.estilosCssAdicionales = undefined;
+
+    if (Resolver) this.#promiseFinishedResolve();
+  }
+}
+
+/**
+ *
+ * @param {HTMLElement} HTMLelement
+ * @param {Number} duracionSegundos
+ * @param {String} displayOriginal
+ * @param {String []} clasesARespetar
+ * @param {String} easing
+ * @param {Boolean} permanent
+ * @returns
+ */
+function aparecerElementoConScale(
+  HTMLelement,
+  duracionSegundos,
+  displayOriginal,
+  easing = "linear",
+  permanent = true
+) {
+  const APPEAR_SCALE = HTMLelement.animate(
+    [
+      { scale: 0, display: displayOriginal }, //0%
+      { scale: 1, display: displayOriginal },
+    ],
+    {
+      iterations: 1,
+      duration: duracionSegundos * 1000,
+      easing: easing,
+      fill: permanent ? "forwards" : "none",
+    }
+  );
+
+  return APPEAR_SCALE;
+}
+
+class AnimacionAparicionYDesaparicionConScale {
+  estilosCssAdicionales;
+  #promiseFinishedResolve;
+  #promiseAparicionResolve;
+
+  /**
+   *
+   * @param {HTMLElement} HTMLElement
+   * @param {Number} duracionSegundos
+   * @param {Map} estilosCSSAparicion
+   * @param {Promise} promesaParaDesaparecer
+   *
+   */
+  constructor(
+    HTMLElement,
+    duracionSegundos,
+    estilosCSSAparicion = new Map(),
+    promesaParaDesaparecer = undefined
+  ) {
+    this.elementoHTML = HTMLElement;
+
+    this.Nombre_Clase_Animacion =
+      this.elementoHTML.tagName[0] + "-" + generarIdUnico(3);
+
+    let estilosAparicion = "";
+
+    estilosCSSAparicion.forEach((valor, clave) => {
+      estilosAparicion += `${clave}: ${valor};`;
+    });
+
+    this.estilosCssAdicionales = insertarReglasCSSAdicionales(`
+          
+        @keyframes A-${this.Nombre_Clase_Animacion}{
+            0%{
+              top: 0;
+              scale: 0;
+              opacity: 0;
+              position: absolute;
+            }
+
+            90%{
+              top: 0;
+              scale: 1;
+              opacity: 1;
+              position: absolute;
+              ${estilosAparicion}
+            }
+
+            100%{
+              top: 0;
+              scale: 1;
+              opacity: 1;
+              position: absolute;
+              ${estilosAparicion}
+            }
+        }
+  
+        .${this.Nombre_Clase_Animacion}{
+            position: absolute;
+            top: -9999px;
+            animation: A-${this.Nombre_Clase_Animacion} ${duracionSegundos}s linear;
+            animation-iteration-count: 2;
+            animation-direction: alternate;
+            opacity: 0;
+        }  
+      `);
+
+    this.finished = new Promise((resolve) => {
+      this.#promiseFinishedResolve = resolve;
+    });
+
+    this.aparicionFinalizada = new Promise((resolve) => {
+      this.#promiseAparicionResolve = resolve;
+    });
+
+    this.elementoHTML.addEventListener("animationiteration", () => {
+      this.pausar();
+      this.#promiseAparicionResolve();
+    });
+
+    this.elementoHTML.addEventListener(
+      "animationend",
+      this.finalizar.bind(this)
+    );
+
+    if (promesaParaDesaparecer) {
+      promesaParaDesaparecer.then(() => {
+        this.iniciar();
+      });
+    }
+  }
+
+  iniciar() {
+    if (!this.elementoHTML.classList.contains(this.Nombre_Clase_Animacion)) {
+      this.elementoHTML.classList.add(this.Nombre_Clase_Animacion);
+      return false;
+    }
+
+    this.elementoHTML.style.animationPlayState = "running";
+  }
+
+  pausar() {
+    this.elementoHTML.style.animationPlayState = "paused";
+  }
+
+  finalizar(Resolver = true) {
+    if (!this.elementoHTML.classList.contains(this.Nombre_Clase_Animacion))
+      return false;
+
+    this.elementoHTML.classList.remove(this.Nombre_Clase_Animacion);
+
+    if (this.estilosCssAdicionales)
+      eliminarReglasCSSAdicionales(this.estilosCssAdicionales);
 
     if (Resolver) this.#promiseFinishedResolve();
   }

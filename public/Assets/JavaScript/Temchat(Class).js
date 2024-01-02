@@ -1,15 +1,19 @@
 import { CountdownTimer } from "./CountdownTimer(class).js";
 import { abrirPuertas, cerrarPuertas } from "./Chat-main.js";
 
+
 const CONTENEDOR_DE_CHAT_EN_VIVO = document.getElementById("cont-live-chat");
 const COUNT_DOWN_TIMER = document.getElementById("Count-Down-Timer");
 const DELAY_FOR_COUNTDOWNTIMER = 0.5;
 
 export class Temchat {
+  animation;
+
   /**
    *
    * @param {Object} miUserData
    * @param {Object} otherUserData
+   * @param {Object} miSocket
    */
   constructor(miUserData, otherUserData, miSocket) {
     this.miUserData = miUserData;
@@ -139,7 +143,12 @@ export class Temchat {
   }
 
   #desplegarChat() {
-    aparecerElementoConScale(this.componenteHTML, 0.4, "block");
+    this.animation = new AnimacionAparicionYDesaparicionConScale(
+      this.componenteHTML,
+      0.4
+    );
+
+    this.animation.iniciar();
   }
 
   /**
@@ -148,27 +157,51 @@ export class Temchat {
    */
   finalizarChat(itIsMe = true) {
     if (itIsMe) {
-      desvanecerElementoConScale(
-        this.componenteHTML,
-        0.4
-      ).animation.finished.then(() => {
+      // desvanecerElementoConScale(
+      //   this.componenteHTML,
+      //   0.4
+      // ).animation.finished.then(() => {
+      //   setTimeout(() => {
+      //     CONTENEDOR_DE_CHAT_EN_VIVO.removeChild(this.componenteHTML);
+      //     abrirPuertas(1);
+      //   }, 500);
+      // });
+
+      this.animation.iniciar();
+
+      this.animation.finished.then(()=>{
         setTimeout(() => {
           CONTENEDOR_DE_CHAT_EN_VIVO.removeChild(this.componenteHTML);
           abrirPuertas(1);
         }, 500);
-      });
+      })
+
+
+
     } else {
+
       this.#elOtroUsuarioFinalizoElTemchatMESSAGE();
 
-      desvanecerElementoConScale(
-        this.componenteHTML,
-        0.4
-      ).animation.finished.then(() => {
+      // desvanecerElementoConScale(
+      //   this.componenteHTML,
+      //   0.4
+      // ).animation.finished.then(() => {
+      //   setTimeout(() => {
+      //     CONTENEDOR_DE_CHAT_EN_VIVO.removeChild(this.componenteHTML);
+      //     abrirPuertas(1);
+      //   }, 500);
+      // });
+
+      this.animation.iniciar();
+
+      this.animation.finished.then(()=>{
         setTimeout(() => {
           CONTENEDOR_DE_CHAT_EN_VIVO.removeChild(this.componenteHTML);
           abrirPuertas(1);
         }, 500);
-      });
+      })
+
+
     }
   }
 
