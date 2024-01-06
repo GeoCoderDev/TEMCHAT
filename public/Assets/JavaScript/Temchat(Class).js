@@ -237,7 +237,10 @@ export class Temchat {
 
     this.messageInput.value = "";
 
+    this.sendButton.classList.remove("send-message-button-actived");
+
     this.#mantenerScrollEnParteInferior();
+
   }
 
   /**

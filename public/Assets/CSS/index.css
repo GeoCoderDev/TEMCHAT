@@ -50,6 +50,15 @@ body {
     
 }
 
+input{
+  background-color: transparent;
+}
+
+input:-webkit-autofill {
+  transition: background-color 5000s ease-in-out 0s;
+  /* background-color: transparent !important; */
+}
+
 form[name="entry-form"] {
   height: 65%;
   width: 300px;
