@@ -16,10 +16,19 @@
   object-fit: cover;
 }
 
+/* Desactivar el resaltado visual en algunos navegadores móviles */
+.icono-acceso {
+  -webkit-tap-highlight-color: transparent; /* Para Safari y otros navegadores basados en WebKit */
+  -webkit-touch-callout: none; /* Desactivar menú emergente en iOS al mantener presionado */
+  -ms-touch-action: manipulation; /* Desactivar la acción táctil de IE */
+  touch-action: manipulation; /* Desactivar la acción táctil genérica */
+  user-select: none; /* Desactivar la selección de texto */
+}
+
 :root {
   --color-logo: rgb(51, 82, 199);
   --color-fondo-pagina: white;
-  --color-fondo-pagina2: rgb(248, 245, 245);
+  --color-fondo-pagina2: #eeeeee;
   --ancho-scrollbar: 0.5vw;
   --safe-area-inset-top: env(safe-area-inset-top, 0);
 }
@@ -33,7 +42,7 @@ body {
 
 /* ESTILOS GENERALES */
 
-input[type="number"]{
+input[type="number"] {
   outline: none;
 }
 
@@ -75,13 +84,17 @@ header {
   font-weight: 500;
 }
 
-#cont-interactive-elements{
+#cont-interactive-elements {
   width: 100%;
   height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.flecha {
+  display: none;
 }
 
 #cont-chat-modalities {
@@ -91,8 +104,14 @@ header {
   align-items: center;
   justify-content: center;
   background-color: transparent;
-  margin-bottom: 1vh;
+  margin-bottom: 2vh;
+
+  /* box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.2); */
   /* padding: max(1.5vw, 2vh) 0; */
+}
+
+#cont-chat-opcional {
+  display: contents;
 }
 
 .chat-modality {
@@ -164,7 +183,7 @@ header {
   box-shadow: 0 0.3vw 0.5vw rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
   opacity: 0.5;
   filter: saturate(2);
-  margin-bottom: min(2vh, 1.8vw);
+  margin-bottom: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -248,6 +267,10 @@ header {
   color: rgb(255, 255, 255);
 }
 
+#cont-iconos-acceso {
+  display: none;
+}
+
 /* CHAT RANDOM */
 
 #random-chat {
@@ -292,9 +315,10 @@ header {
 
 .input-time-label {
   font-family: Roboto;
-  margin-right: max(0.5vw,0.5vh);
+  margin-right: max(0.5vw, 0.5vh);
   color: rgb(211, 85, 85);
-  font-weight: 500;
+  font-weight: 400;
+  font-size: max(1vw, 1.5vh);
 }
 
 #random-temchat-time,
@@ -303,9 +327,10 @@ header {
   border: none;
   text-align: center;
   padding: max(0.5vh, 0.5vw);
-  margin-left: max(0.5vw,0.5vh);
+  margin-left: max(0.5vw, 0.5vh);
   border-radius: max(1vh, 1vw);
   color: rgb(211, 85, 85);
+  font-size: max(1vw, 1.5vh);
 }
 
 /* PARA BUSCAR USUARIOS */
@@ -357,13 +382,13 @@ header {
 .Texto-Carga {
   font-family: Arial, Helvetica, sans-serif;
   color: #bbb;
-  font-size: max(1vw, 1vh);
+  font-size: 0.8rem;
 }
 
 .cont-user-found {
   height: 20%;
   width: 80%;
-  border-radius: min(1vw, 1vh);
+  border-radius: 1rem;
   font-family: Roboto;
   display: flex;
   justify-content: space-evenly;
@@ -375,16 +400,16 @@ header {
   white-space: nowrap; /* Evita el salto de línea */
   overflow: hidden; /* Oculta el contenido que desborda */
   text-overflow: ellipsis;
-  font-size: 1vw;
+  font-size: 1rem;
   padding: max(0.5vw, 0.5vh);
 }
 
 .Enviar-Solicitud-Button {
   background-color: rgb(68, 141, 87);
   filter: saturate(2);
-  font-size: min(1.7vh, 1.1vw);
-  padding: min(1vw, 1vh) min(1.1vw, 1.1vh);
-  border-radius: 0.5vw;
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   color: white;
   font-weight: 500;
@@ -400,9 +425,8 @@ header {
 
 /* PANEL DE MENSAJES */
 
-
-#messages-panel{
-  background-color: white;
+#messages-panel {
+  background-color: #fff;
   width: 84%;
   height: 8vh;
   margin-top: 1vh;
@@ -410,36 +434,36 @@ header {
   align-items: center;
   justify-content: center;
   font-family: consolas;
-  font-size: min(2vw, 2.6vh);
+  font-size: 0.7rem;
   white-space: nowrap; /* Evita el salto de línea */
   overflow: hidden; /* Oculta el contenido que desborda */
   text-overflow: ellipsis;
   font-weight: 400;
   /* border: 1px solid rgb(232, 232, 232); */
-  /* border: 0.2vw dashed rgba(0, 0, 0, 0.4); */
-  
+  /* border: 1px dashed var(--color-logo); */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.mesagge-in-panel{
-  display:flex;
+.mesagge-in-panel {
+  display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
 }
 
-.cancel-request-button{
+.cancel-request-button {
   background-color: rgb(211, 85, 85);
   outline: none;
-  padding: min(1vw,1vh) min(0.7vw, 0.7vh);
+  padding: 0.5rem;
   border: none;
   color: white;
-  border-radius: min(1vw,1vh);
-  margin-left: max(1vh,1vw);
+  border-radius: min(1vw, 1vh);
+  margin-left: max(1vh, 1vw);
   cursor: pointer !important;
-  font-size: min(1vw, 2vh);
+  font-size: 0.6rem;
 }
 
-.dot-for-animation-in-message{
+.dot-for-animation-in-message {
   color: transparent;
 }
 
@@ -533,6 +557,9 @@ header {
     rgb(16, 12, 33),
     rgb(58, 50, 94) 70%
   );
+
+  box-shadow: 0 0.4vh 0.8vh 0.4vh rgba(35, 39, 51, 0.7);
+  /* box-shadow: 0 -1vh 2vh 1.2vh rgba(35, 39, 51, 0.7); */
 }
 
 .finished-temchat-button {
@@ -625,7 +652,6 @@ header {
   border: 0 solid white;
   box-shadow: 0 -1vh 2vh 1.2vh rgba(35, 39, 51, 0.7);
   z-index: -1;
-
 }
 
 #chat-footer {
@@ -722,18 +748,17 @@ header {
 
 .botones-chat-random {
   background-color: rgb(250, 228, 227);
-  padding: min(1.5vh,1.5vw) min(1vh, 1vw);
+  padding: max(0.7vw, 1.5vh);
   border-radius: max(1vh, 1vw);
   font-weight: 400;
   border: none;
   cursor: pointer;
   color: rgb(211, 85, 85);
   border-radius: min(1vw, 1vh);
-  font-size: Roboto;
+  font-family: Roboto;
   width: 70%;
   word-wrap: normal;
-  font-size: 0.7rem;
-  font-size: 1.9vh;
+  font-size: 1vw;
 }
 
 /* VENTANA MODAL */
@@ -755,12 +780,12 @@ header {
 } */
 
 /* PORTRAIT */
-@media screen and (orientation: portrait) {
+@media screen and (max-aspect-ratio: 1.1/1) {
   body {
     height: 100%;
   }
 
-  #main-interface{
+  #main-interface {
     height: var(--Alto-Pantalla-Visible);
   }
 
@@ -782,22 +807,40 @@ header {
     font-weight: 500;
   }
 
-  #cont-interactive-elements{
+  #cont-interactive-elements {
     /* margin-top: 13.5vh; */
     height: 86.5%;
     justify-content: space-evenly;
     padding: 1vh 0;
   }
 
-  #cont-chat-modalities{
+  .chat-modality:nth-child(2) {
+    border-left: none;
+    border-right: none;
+  }
+
+  #cont-chat-modalities {
     width: 85vw;
-    height: 75%;
+    height: 65%;
     overflow: hidden;
-    
+    position: relative;
+    display: block;
+  }
+
+  #cont-chat-opcional {
+    display: flex;
+    width: 255vw;
+    height: 100%;
+    position: relative;
+    transition: all 0.1s;
+  }
+
+  .botones-chat-random {
+    font-size: 1.5vh;
   }
 
   .chat-modality {
-    width: 100%;
+    width: 85vw;
     height: 100%;
   }
 
@@ -805,7 +848,69 @@ header {
     border: 0;
   }
 
-  #messages-panel{
+  #cont-iconos-acceso {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    /* border: 1px solid #000; */
+    min-width: 17rem;
+    height: 8%;
+    /* margin-top: -1.5vh; */
+  }
+
+  .icono-acceso {
+    width: 5.5vh;
+    height: 5.5vh;
+    border-width: 1px;
+    border-radius: 50%;
+    border-style: solid;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: brightness(0.8);
+    transition: all 0.1s ease-out;
+  }
+
+  .icono-acceso:nth-child(1) {
+    background-color: #ede3fa;
+    border-color: #7d649f;
+    color: #7d649f;
+    font-size: 1rem;
+  }
+
+  .icono-acceso:nth-child(2) {
+    background-color: #fae4e3;
+    border-color: #d35652;
+    color: #d35652;
+    font-size: 1rem;
+  }
+
+  .icono-acceso:nth-child(3) {
+    background-color: #c5dcfd;
+    border-color: #6387d2;
+    color: #6387d2;
+    font-size: 1rem;
+  }
+
+  .icono-selected {
+    scale: 1.3;
+    border-width: 2px;
+    filter: none;
+  }
+
+  #usuario-buscado {
+    width: 90%;
+    font-size: 0.8rem;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  #contenedor-usuarios-encontrados {
+    height: 70%;
+  }
+
+  #messages-panel {
     margin-top: 0;
     height: 10%;
   }
@@ -868,9 +973,7 @@ header {
 }
 
 @media (max-aspect-ratio: 1.25/1) {
-
-  .TEMCHAT{
+  .TEMCHAT {
     width: 100%;
   }
-  
 }

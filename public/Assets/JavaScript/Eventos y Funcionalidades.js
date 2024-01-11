@@ -41,7 +41,8 @@ window.addEventListener("load", () => {
           Array.from(usuarios).forEach((usuario) => {
             if (
               usuario._id !=
-              MessageInMessagePanel.currentMessage?.currentOperationUserInformationID
+              MessageInMessagePanel.currentMessage
+                ?.currentOperationUserInformationID
             ) {
               const usuarioEncontrado = new UserFound(usuario, socket);
             }
@@ -51,5 +52,23 @@ window.addEventListener("load", () => {
           console.error(e);
         });
     }, 600);
+  });
+
+  //Añadiendo Eventos
+  const iconosAcceso = document.querySelectorAll(".icono-acceso");
+  const Contenedor_Chat_Opcional = document.getElementById("cont-chat-opcional");
+
+  iconosAcceso.forEach((icono, index) => {
+    icono.addEventListener("click", (e) => {
+      if (e.target.classList.contains("icono-selected")) return;
+      
+      Contenedor_Chat_Opcional.style.left = `-${100*index}%`;
+
+      iconosAcceso.forEach((ic) => {
+        if (ic === e.target || ic === e.target.parentNode)
+          return ic.classList.add("icono-selected");
+        ic.classList.remove("icono-selected");
+      });
+    });
   });
 });

@@ -101,7 +101,7 @@ export class ChatRequest {
     //   OPACITY_REQUEST
     // );
 
-    this.animacion = new AnimacionAparicionYDesaparicion(this.componenteHTML,0.5,["request", this.nombreClaseAdicional], new Map([["opacity", 0.5]]),false);
+    this.animacion = new AnimacionAparicionYDesaparicion(this.componenteHTML,0.5,["request", this.nombreClaseAdicional], new Map([["opacity", 0.5],["margin-bottom","min(2vh, 1.5vw)"]]),false);
 
     this.animacion.finished.then(()=>this.componenteHTML.remove());
 

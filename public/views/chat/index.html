@@ -20,94 +20,105 @@
 
       <div id="cont-interactive-elements">
         <div id="cont-chat-modalities">
-          <div id="cont-requests-for-chat" class="chat-modality">
-            <div class="modility-title">
-              Solicitudes de chat<span class="icon-bubbles4"></span>
+          <div id="cont-chat-opcional">
+            <div id="cont-requests-for-chat" class="chat-modality">
+              <div class="modility-title">
+                Solicitudes de chat<span class="icon-bubbles4"></span>
+              </div>
+
+              <div id="cont-request"></div>
             </div>
 
-            <div id="cont-request"></div>
-          </div>
+            <div id="random-chat" class="chat-modality">
+              <div class="modility-title">
+                Chat aletorio<span class="icon-shuffle"></span>
+              </div>
 
-          <div id="random-chat" class="chat-modality">
-            <div class="modility-title">
-              Chat aletorio<span class="icon-shuffle"></span>
+              <div id="contenedor-sections-chat-random">
+                <section class="chat-random-section">
+                  <button
+                    id="random-temchat-button"
+                    class="botones-chat-random"
+                  >
+                    CHAT ALEATORIO
+                  </button>
+                  <div class="contenedor-input-time-request">
+                    <h5 class="input-time-label">Tiempo</h5>
+                    <input
+                      type="number"
+                      id="random-temchat-time"
+                      min="5"                      
+                      max="60"
+                      value="10"
+                    />
+                  </div>
+                </section>
+
+                <section class="chat-random-section">
+                  <button
+                    id="random-temchat-persistente-button"
+                    class="botones-chat-random"
+                  >
+                    CHAT ALEATORIO PERSISTENTE
+                  </button>
+                  <div class="contenedor-input-time-request">
+                    <h5 class="input-time-label">Tiempo</h5>
+                    <input
+                      type="number"
+                      id="random-temchat-persistent-time"
+                      min="5"
+                      max="60"
+                      value="10"
+                    />
+                  </div>
+                </section>
+
+                <section class="chat-random-section">
+                  <button
+                    id="random-temchat-magnetic-button"
+                    class="botones-chat-random"
+                  >
+                    CHAT ALEATORIO MAGNETICO
+                  </button>
+                </section>
+              </div>
             </div>
 
-            <div id="contenedor-sections-chat-random">
-              <section class="chat-random-section">
-                <button id="random-temchat-button" class="botones-chat-random">
-                  CHAT ALEATORIO
-                </button>
-                <div class="contenedor-input-time-request">
-                  <h5 class="input-time-label">Tiempo</h5>
-                  <input
-                    type="number"
-                    id="random-temchat-time"
-                    min="5"
-                    ,
-                    max="60"
-                    value="10"
-                  />
+            <div id="search-user-for-chat" class="chat-modality">
+              <div class="modility-title">
+                Buscar usuario<span class="icon-search2"></span>
+              </div>
+
+              <div id="contenedor-buscador-usuarios">
+                <input
+                  type="text"
+                  id="usuario-buscado"
+                  placeholder="Escriba el nombre del usuario a buscar..."
+                />
+                <div id="contenedor-usuarios-encontrados">
+                  <!-- <span class="Texto-Carga">Cargando...</span>      -->
+
+                  <!-- <div class="cont-user-found">
+                                <span class="Username-user-found">Jg MANUEL CHAVEZ</span>
+                                <div class="Enviar-Cancelar-Solicitud-Button">Enviar Solicitud</div>
+                            </div> -->
                 </div>
-              </section>
-
-              <section class="chat-random-section">
-                <button
-                  id="random-temchat-persistente-button"
-                  class="botones-chat-random"
-                >
-                  CHAT ALEATORIO PERSISTENTE
-                </button>
-                <div class="contenedor-input-time-request">
-                  <h5 class="input-time-label">Tiempo</h5>
-                  <input
-                    type="number"
-                    id="random-temchat-persistent-time"
-                    min="5"
-                    max="60"
-                    value="10"
-                  />
-                </div>
-              </section>
-
-              <section class="chat-random-section">
-                <button
-                  id="random-temchat-magnetic-button"
-                  class="botones-chat-random"
-                >
-                  CHAT ALEATORIO MAGNETICO
-                </button>
-              </section>
-            </div>
-          </div>
-
-          <div id="search-user-for-chat" class="chat-modality">
-            <div class="modility-title">
-              Buscar usuario<span class="icon-search2"></span>
-            </div>
-
-            <div id="contenedor-buscador-usuarios">
-              <input
-                type="text"
-                id="usuario-buscado"
-                placeholder="Escriba el nombre del usuario a buscar..."
-              />
-              <div id="contenedor-usuarios-encontrados">
-                <!-- <span class="Texto-Carga">Cargando...</span>      -->
-
-                <!-- <div class="cont-user-found">
-                              <span class="Username-user-found">Jg MANUEL CHAVEZ</span>
-                              <div class="Enviar-Cancelar-Solicitud-Button">Enviar Solicitud</div>
-                          </div> -->
               </div>
             </div>
           </div>
         </div>
 
-        <div id="messages-panel"></div>
-        
-      </div>
+        <div id="cont-iconos-acceso">
+          <div class="icono-acceso icono-selected">
+            <span class="icon-bubbles4"></span>
+          </div>
+          <div class="icono-acceso"><span class="icon-shuffle"></span></div>
+          <div class="icono-acceso"><span class="icon-search2"></span></div>
+        </div>
 
+        <div id="messages-panel">
+        </div>
+      </div>
     </div>
 
     <div id="Puerta-1"></div>
