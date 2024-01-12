@@ -3,9 +3,11 @@ export const CONT_REQUEST = document.getElementById("cont-request");
 const ALTO_REQUEST = "4rem";
 const MARGEN_REQUEST = "0 0 max(1.7vh,1vw) 0";
 const OPACITY_REQUEST = 0.5;
+const CANTIDAD_SOLICITUDES_HTML = document.getElementById(
+  "cantidad-solicitudes"
+);
 
 export class ChatRequest {
-
   animacion;
 
   constructor(userData, waitTime) {
@@ -23,7 +25,6 @@ export class ChatRequest {
 
     componenteHTML.style.position = "absolute";
     componenteHTML.style.opacity = 0;
-    
 
     CONT_REQUEST.insertAdjacentElement("afterbegin", componenteHTML);
 
@@ -37,12 +38,14 @@ export class ChatRequest {
                 </div>
             </div>      
         `;
-    
+
     componenteHTML.innerHTML += waitTime
       ? `<div class="time-request">${waitTime}</div>`
       : "";
 
-    this.componenteHTML = document.querySelector(`.${this.nombreClaseAdicional}`);
+    this.componenteHTML = document.querySelector(
+      `.${this.nombreClaseAdicional}`
+    );
 
     this.Promise = new Promise((resolve, reject) => {
       this.cancelRequest = reject;
@@ -50,7 +53,7 @@ export class ChatRequest {
       this.buttonAcceptEventID = delegarEvento(
         "click",
         `.${this.nombreClaseAdicional} .request-button:nth-child(1)`,
-        () => {                    
+        () => {
           this.desvanecerElemento();
           resolve();
         }
@@ -61,16 +64,17 @@ export class ChatRequest {
         "click",
         `.${this.nombreClaseAdicional} .request-button:nth-child(2)`,
         () => {
-          this.desvanecerElemento()
+          this.desvanecerElemento();
           reject();
         }
       );
 
       if (waitTime) {
+        console.log(waitTime)
         const contenedorConteo = document.querySelector(
           `.${this.nombreClaseAdicional} .time-request`
         );
-        const cuentaRegresiva = new CountdownTimer(waitTime, contenedorConteo);
+        const cuentaRegresiva = new CountdownTimer(waitTime,1,true,0,contenedorConteo);
         cuentaRegresiva.start().then(() => {
           this.desvanecerElemento().then(() => {
             // SOLO SE RECHAZARA LA PROMESA CUANDO LA ANIMACION FINALIZE
@@ -84,10 +88,13 @@ export class ChatRequest {
     });
 
     ChatRequest.allRequests.set(userData._id, this);
-    
+
     this.#desplegarElemento();
 
-
+    if (ChatRequest.allRequests.size > 0) {
+      CANTIDAD_SOLICITUDES_HTML.style.display = "flex";
+      CANTIDAD_SOLICITUDES_HTML.innerText = ChatRequest.allRequests.size;
+    }
   }
 
   #desplegarElemento() {
@@ -101,26 +108,35 @@ export class ChatRequest {
     //   OPACITY_REQUEST
     // );
 
-    this.animacion = new AnimacionAparicionYDesaparicion(this.componenteHTML,0.5,["request", this.nombreClaseAdicional], new Map([["opacity", 0.5],["margin-bottom","min(2vh, 1.5vw)"]]),false);
+    this.animacion = new AnimacionAparicionYDesaparicion(
+      this.componenteHTML,
+      0.5,
+      ["request", this.nombreClaseAdicional],
+      new Map([
+        ["opacity", 0.5],
+        ["margin-bottom", "min(2vh, 1.5vw)"],
+      ]),
+      false
+    );
 
-    this.animacion.finished.then(()=>this.componenteHTML.remove());
+    this.animacion.finished.then(() => this.componenteHTML.remove());
 
     this.animacion.iniciar();
-
   }
 
   desvanecerElemento() {
-    
     eliminarEventoDelegado("click", this.buttonAcceptEventID);
     eliminarEventoDelegado("click", this.buttonRejectEventID);
 
     ChatRequest.allRequests.delete(this.requesterUserID);
 
+    if (ChatRequest.allRequests.size == 0)
+      CANTIDAD_SOLICITUDES_HTML.style.display = "none";
+
     // INICIAR PARA DESAPARECER
-    this.animacion.iniciar();    
+    this.animacion.iniciar();
 
     return this.animacion.finished;
-
   }
 
   // #setRequest(){

@@ -1,8 +1,7 @@
 const socketIo = require("socket.io");
 const uuid = require("uuid");
 const temporaryUsersController = require("../components/temporaryUsers/controller");
-const controller = require("../components/temporaryUsers/controller");
-const CountdownTimer = require("../utils/CountdownTimer(class)");
+
 
 /**
  *
@@ -16,7 +15,7 @@ function socketManager(server) {
 
     socket.on("MY-USERNAME", (username) => {
       let MI_USER_DATA;
-      controller
+      temporaryUsersController
         .getUserByUsername(username)
         .then((usuarioEncontrado) => {
           MI_USER_DATA = usuarioEncontrado;
@@ -40,8 +39,7 @@ function socketManager(server) {
               .then((usuarioAleatorio) => {
                 socket.emit(
                   "TAKE-YOUR-ALEATORY-USER",
-                  JSON.stringify(usuarioAleatorio),
-                  JSON.stringify(MI_USER_DATA)
+                  JSON.stringify(usuarioAleatorio[0])
                 );
               })
               .catch((e) => {
@@ -86,32 +84,45 @@ function socketManager(server) {
               .emit("MESSAGE-FOR-YOU", content);
           });
 
-          socket.on("(SERVER)REQUEST-FOR-X-USER", (destinataryUser) => {
-            const DESTINATARY_DATA = JSON.parse(destinataryUser);
+          socket.on("(SERVER)REQUEST-FOR-X-USER", (usernameOfUser, type, waitTime) => {
+            
+            temporaryUsersController.getUserByUsername(usernameOfUser).then((userFound)=>{
 
-            socket
-              .to(DESTINATARY_DATA.socketConectionID)
-              .emit(
-                "TEMCHAT-REQUEST-FOR-YOU",
-                JSON.stringify(MI_USER_DATA),
-                "Temchat-Request"
-              );
+              socket
+                .to(userFound.socketConectionID)
+                .emit(
+                  "TEMCHAT-REQUEST-FOR-YOU",
+                  JSON.stringify(MI_USER_DATA),
+                  type,waitTime
+                );
+            })
+          
           });
 
-          socket.on("(SERVER)CANCEL-REQUEST-FOR-X-USER", (userInfo) => {
-            const DATA_USER_INFO = JSON.parse(userInfo);
+          socket.on("(SERVER)CANCEL-REQUEST-FOR-X-USER", (username) => {
 
-            socket
-              .to(DATA_USER_INFO.socketConectionID)
-              .emit("CANCEL-REQUEST-FROM-X-USER", JSON.stringify(MI_USER_DATA));
+            temporaryUsersController.getUserByUsername(username).then((user)=>{
+
+              if(!user) return console.log("Usuario no encontrado");
+              
+              socket
+                .to(user.socketConectionID)
+                .emit("CANCEL-REQUEST-FROM-X-USER", JSON.stringify(MI_USER_DATA));
+            })
+
           });
 
-          socket.on("(SERVER)TEMCHAT-REJECTED-FOR-YOU", (requesterData) => {
-            const REQUESTER_DATA = JSON.parse(requesterData);
+          socket.on("(SERVER)TEMCHAT-REJECTED-FOR-YOU", (username) => {
+            
+            temporaryUsersController.getUserByUsername(username).then((user)=>{
+              
+              if(!user) return;
 
-            socket
-              .to(REQUESTER_DATA.socketConectionID)
-              .emit("TEMCHAT-REJECTED-FOR-YOU", JSON.stringify(MI_USER_DATA));
+              socket
+                .to(user.socketConectionID)
+                .emit("TEMCHAT-REJECTED-FOR-YOU", JSON.stringify(MI_USER_DATA));
+            })
+
           });
 
           socket.on("(SERVER)TEMCHAT-FINISHED-FOR-YOU", (destinataryUser) => {

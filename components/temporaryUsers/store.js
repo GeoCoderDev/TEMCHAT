@@ -2,6 +2,10 @@ const Limite_de_Resultados = 50;
 
 const temporaryUser = require("./model");
 
+/**
+ *
+ * @param {object} user
+ */
 async function addTemporaryUser(user) {
   try {
     const nuevoUsuarioTemporal = new temporaryUser(user);
@@ -11,26 +15,46 @@ async function addTemporaryUser(user) {
   }
 }
 
+/**
+ *
+ * @returns {string | number}
+ */
 async function getUsersAmount() {
   return await temporaryUser.countDocuments({});
 }
 
+/**
+ * Obtiene usuarios que coinciden con un patrón de nombre de usuario, excluyendo un usuario específico.
+ * @param {RegExp} searchPattern - Patrón de búsqueda para el nombre de usuario.
+ * @param {string} idExcept - ID del usuario a excluir de los resultados.
+ * @returns {Array} - Un array de usuarios encontrados.
+ * @throws {Error} - Se lanza si hay algún error durante la consulta.
+ */
 async function getUsersByUsernamePattern(searchPattern, idExcept) {
   try {
     // Construir la expresión regular con el valor de searchPattern
     const regex = new RegExp(searchPattern, "i");
 
-    // Utilizar la expresión regular en la consulta
+    // Utilizar la expresión regular en la consulta y excluir al usuario especificado
     const usuariosEncontrados = await temporaryUser
       .find({ username: regex, _id: { $ne: idExcept } })
+      .lean()
       .limit(Limite_de_Resultados);
+
+    // Puedes agregar lógica adicional de procesamiento aquí si es necesario
 
     return usuariosEncontrados;
   } catch (error) {
+    console.error("Error en getUsersByUsernamePattern:", error.message);
     throw error;
   }
 }
 
+/**
+ *
+ * @param {string | number} id
+ *
+ */
 async function deleteTemporaryUser(id) {
   try {
     return await temporaryUser.deleteOne({ _id: id });
@@ -39,17 +63,28 @@ async function deleteTemporaryUser(id) {
   }
 }
 
+/**
+ *
+ * @param {string} username
+ * @returns {}
+ */
 async function getUserByUsername(username) {
   try {
-    const usuarioEncontrado = await temporaryUser.findOne({
-      username: username,
-    });
-    return usuarioEncontrado;
+    return await temporaryUser
+      .findOne({
+        username: username,
+      })
+      .lean();
   } catch (error) {
     throw error;
   }
 }
 
+/**
+ *
+ * @param {string} id
+ * @param {string} socketConectionID
+ */
 async function setSocketIdConnection(id, socketConectionID) {
   try {
     await temporaryUser.updateOne(
@@ -61,6 +96,11 @@ async function setSocketIdConnection(id, socketConectionID) {
   }
 }
 
+/**
+ *
+ * @param {string} id
+ * @param {number} state
+ */
 async function setState(id, state) {
   try {
     await temporaryUser.updateOne({ _id: id }, { $set: { state: state } });
@@ -97,6 +137,7 @@ async function getSocketIDByID(userID) {
   }
 }
 
+
 module.exports = {
   add: addTemporaryUser,
   getUsersAmount: getUsersAmount,
@@ -106,5 +147,5 @@ module.exports = {
   setSocketIdConnection: setSocketIdConnection,
   setState: setState,
   getAleatoryUser: getAleatoryUser,
-  getSocketIDByID: getSocketIDByID,
+  getSocketIDByID: getSocketIDByID
 };

@@ -5,9 +5,8 @@ import { UserFound } from "./UserFound(Class).js";
 const MESSAGE_PANEL = document.getElementById("messages-panel");
 
 export class MessageInMessagePanel {
-  
   animacion;
-  
+
   /**
    *
    * @param {string} message
@@ -30,7 +29,7 @@ export class MessageInMessagePanel {
     mensajeHTML.classList.add("mesagge-in-panel");
     mensajeHTML.style.position = "absolute";
     mensajeHTML.style.opacity = 0;
-    mensajeHTML.insertAdjacentText("afterbegin", message)
+    mensajeHTML.insertAdjacentText("afterbegin", message);
 
     let dotsAnimationStart;
     let dotsAnimationID;
@@ -42,7 +41,9 @@ export class MessageInMessagePanel {
       );
 
       dotsAnimationStart = () => {
-        const puntos = document.querySelectorAll(".dot-for-animation-in-message");
+        const puntos = document.querySelectorAll(
+          ".dot-for-animation-in-message"
+        );
 
         const dostsAnimation = () => {
           puntos.forEach((punto, index) => {
@@ -56,18 +57,18 @@ export class MessageInMessagePanel {
                 { color: dotsColor },
                 { color: dotsColor },
                 { color: dotsColor },
-                { color: dotsColor }
+                { color: dotsColor },
               ],
               {
                 delay: dotAnimationDuration * index * 1000,
                 fill: "none",
-                iterations: 1,                
+                iterations: 1,
                 duration: dotAnimationDuration * 1000 * (3 - index),
                 easing: "linear",
               }
             );
           });
-        } 
+        };
 
         dostsAnimation();
 
@@ -78,9 +79,15 @@ export class MessageInMessagePanel {
     MessageInMessagePanel.currentMessage = this;
 
     if (currentOperationUserInformation) {
-      this.currentOperationUserInformationID = JSON.parse(
+      const currentOperationUserInformationObject = JSON.parse(
         currentOperationUserInformation
-      )._id;
+      );
+
+      this.currentOperationUserInformationID =
+      currentOperationUserInformationObject._id;
+
+      this.currentOperationUserInformationUsername =
+      currentOperationUserInformationObject.username;
     }
 
     let cancelButtonHTML;
@@ -103,25 +110,25 @@ export class MessageInMessagePanel {
      * @param {0 | 1} state 0 para cuando se ha rechazado y 1 para cuando se acepto la solicitud
      */
     const finalizarMensaje = (state = undefined) => {
-      
       // Reanudando para desaparecer
       this.animacion.iniciar();
-      
+
       this.animacion.finished.then(() => {
         resolveFinish();
-        UserFound.userFoundRequestedCurrent.estadoInicial();
+        UserFound.userFoundRequestedCurrent?.estadoInicial();
         MessageInMessagePanel.currentMessage = undefined;
         document
           .querySelector(`#${MESSAGE_PANEL.id} .mesagge-in-panel`)
           .remove();
+
       });
 
-      if(dotsAnimationID) clearInterval(dotsAnimationID);
+      if (dotsAnimationID) clearInterval(dotsAnimationID);
 
-      if (!currentOperationUserInformation || state) return;
+      // if (!currentOperationUserInformation || state) return;
       socket.emit(
         "(SERVER)CANCEL-REQUEST-FOR-X-USER",
-        currentOperationUserInformation
+        this.currentOperationUserInformationUsername
       );
     };
 
@@ -131,30 +138,25 @@ export class MessageInMessagePanel {
 
     MESSAGE_PANEL.appendChild(mensajeHTML);
 
-    this.animacion = new AnimacionAparicionYDesaparicion(
-      mensajeHTML,
-      0.35,
-      ["mesagge-in-panel"]
-    )
+    this.animacion = new AnimacionAparicionYDesaparicion(mensajeHTML, 0.35, [
+      "mesagge-in-panel",
+    ]);
 
     if (!duration) {
-      // SI NO HAY DURACION      
+      // SI NO HAY DURACION
 
-      this.animacion.iniciar();      
+      this.animacion.iniciar();
       this.animacion.aparicionFinalizada.then(() => {
-
-        if(dotsAnimationStart){
+        if (dotsAnimationStart) {
           dotsAnimationID = dotsAnimationStart();
         }
 
         if (cancelButtonHTML) {
           cancelButtonHTML.addEventListener("click", () => {
-            UserFound.userFoundRequestedCurrent.estadoInicial();
+            // if(!UserFound.userFoundRequestedCurrent) return;
             finalizarMensaje();
           });
         }
-
-
       });
 
       return;
@@ -166,10 +168,10 @@ export class MessageInMessagePanel {
 
     MESSAGE_PANEL.appendChild(mensajeHTML);
 
-      this.animacion.iniciar();
-      this.animacion.aparicionFinalizada.then(() => {
-
-        if(dotsAnimationStart){
+    this.animacion.iniciar();
+    this.animacion.aparicionFinalizada
+      .then(() => {
+        if (dotsAnimationStart) {
           dotsAnimationID = dotsAnimationStart();
         }
 
@@ -198,9 +200,9 @@ export class MessageInMessagePanel {
 MessageInMessagePanel.resaltar = (duration) => {
   MESSAGE_PANEL.animate(
     [
-      { filter: "brightness(0.8)" },
-      { filter: "brightness(0.8)" },
-      { filter: "brightness(0.8)" },
+      { filter: "brightness(0.8)", border: "2px solid rgb(211, 85, 85)" },
+      { filter: "brightness(0.8)", border: "2px solid rgb(211, 85, 85)" },
+      { filter: "brightness(0.8)", border: "2px solid rgb(211, 85, 85)" },
       { filter: "none" },
       { filter: "none" },
     ],

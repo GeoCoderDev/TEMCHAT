@@ -5,6 +5,14 @@ export const CONT_USERS_FOUND = document.getElementById(
 );
 
 export class UserFound {
+
+  /**
+   * 
+   * @param {object} user_info
+   * @param {string} user_info._id
+   * @param {string} user_info.username
+   * @param {*} mySocket 
+   */
   constructor(user_info, mySocket) {
     
     const usuarioEncontradoHTML = document.createElement("div");
@@ -37,7 +45,7 @@ export class UserFound {
 
       const enviarSolicitud = () => {
 
-        mySocket.emit("(SERVER)REQUEST-FOR-X-USER", JSON.stringify(user_info));
+        mySocket.emit("(SERVER)REQUEST-FOR-X-USER", user_info.username);
 
         const messageInPanel = new MessageInMessagePanel(
           `Enviando solicitud a ${user_info.username}`,

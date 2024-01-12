@@ -6,6 +6,16 @@ import { UserFound } from "./UserFound(Class).js";
 
 let ESTADO_ACTUAL = 1;
 
+const RANDOM_TEMCHAT_TIME_INPUT = document.getElementById(
+  "random-temchat-time"
+);
+
+RANDOM_TEMCHAT_TIME_INPUT.addEventListener("change",()=>{
+  if(parseInt(RANDOM_TEMCHAT_TIME_INPUT.value)>parseInt(RANDOM_TEMCHAT_TIME_INPUT.max)) RANDOM_TEMCHAT_TIME_INPUT.value = RANDOM_TEMCHAT_TIME_INPUT.max;
+
+  if(parseInt(RANDOM_TEMCHAT_TIME_INPUT.value)<parseInt(RANDOM_TEMCHAT_TIME_INPUT.min)) RANDOM_TEMCHAT_TIME_INPUT.value = RANDOM_TEMCHAT_TIME_INPUT.min;
+})
+
 socket.emit("MY-USERNAME", myUsername);
 
 // EN CASO RECIBAS UNA SOLICITUD
@@ -51,22 +61,22 @@ socket.on(
         //EN CASO RECHACES LA SOLICITUD
         socket.emit(
           "(SERVER)TEMCHAT-REJECTED-FOR-YOU",
-          JSON.stringify(REQUESTER_DATA)
+          REQUESTER_DATA.username
         );
       });
   }
 );
 
-socket.on("TEMCHAT-REJECTED-FOR-YOU",(userInfo)=>{
-  
-  const USER_INFO = JSON.parse(userInfo); 
-  
-  if(USER_INFO._id==MessageInMessagePanel.currentMessage?.currentOperationUserInformationID){
+socket.on("TEMCHAT-REJECTED-FOR-YOU", (userInfo) => {
+  const USER_INFO = JSON.parse(userInfo);
+
+  if (
+    USER_INFO._id ==
+    MessageInMessagePanel.currentMessage?.currentOperationUserInformationID
+  ) {
     MessageInMessagePanel.currentMessage.forceFinish(0);
   }
-
-
-})
+});
 
 socket.on("CANCEL-REQUEST-FROM-X-USER", (userInfo) => {
   const USER_DATA_INFO = JSON.parse(userInfo);
@@ -75,23 +85,42 @@ socket.on("CANCEL-REQUEST-FROM-X-USER", (userInfo) => {
 
 // SOCKET PARA ENVIAR UNA SOLICITUD A CUALQUIER USUARIO
 delegarEvento("click", "#random-temchat-button", (e) => {
-  // socket.emit('GET-ALEATORY-USER');
-  socket.emit("TEMCHAT-REQUEST-FOR-ALEATORY-USER");
+  socket.emit("GET-ALEATORY-USER");
+  // socket.emit("TEMCHAT-REQUEST-FOR-ALEATORY-USER");
 });
 
-// socket.on('TAKE-YOUR-ALEATORY-USER',(aleatoryUser)=>{
+socket.on("TAKE-YOUR-ALEATORY-USER", (aleatoryUser) => {
+  if (MessageInMessagePanel.currentMessage?.currentOperationUserInformationID)
+    return MessageInMessagePanel.resaltar(0.7);
 
-//     console.log(aleatoryUser);
+  console.log(aleatoryUser)  
+  const aleatoryUserObject = JSON.parse(aleatoryUser);
 
-// })
+  socket.emit(
+    "(SERVER)REQUEST-FOR-X-USER",
+    aleatoryUserObject.username,"RANDOM-TEMCHAT",
+    RANDOM_TEMCHAT_TIME_INPUT.value
+  );
+
+  const messageInPanel = new MessageInMessagePanel(
+    `Enviando solicitud a ${aleatoryUserObject.username}`,
+    undefined,
+    true,
+    aleatoryUser,
+    true,
+    "black",
+    0.7
+  );
+
+
+});
 
 socket.on("TEMCHAT-REQUEST-ACCEPTED-FOR-YOU", (miUserData, otherUserData) => {
   const MY_DATA_USER = JSON.parse(miUserData);
   const OTHER_DATA_USER = JSON.parse(otherUserData);
 
-  if(MessageInMessagePanel.currentMessage){
+  if (MessageInMessagePanel.currentMessage) {
     MessageInMessagePanel.currentMessage.forceFinish(1);
-    
   }
 
   const TEMCHAT_ACTUAL = new Temchat(MY_DATA_USER, OTHER_DATA_USER, socket);

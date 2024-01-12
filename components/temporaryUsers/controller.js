@@ -97,11 +97,12 @@ async function changeState(id, state) {
 
 async function getSocketIDByID(userID) {
   try {
-    return await getSocketIDByID(userID);
+    return await store.getSocketIDByID(userID);
   } catch (err) {
     throw err;
   }
 }
+
 
 function hasOnlySpaces(string) {
   const regex = /^\s*$/; // Expresión regular que coincide con espacios en blanco en un string

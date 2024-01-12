@@ -27,9 +27,7 @@ window.addEventListener("load", () => {
           method: "GET",
         }
       )
-        .then((data) => {
-          return data.json();
-        })
+        .then((data) => data.json())
         .then((usuarios) => {
           if (usuarios.length == 0)
             return (CONT_USERS_FOUND.innerHTML = `
@@ -37,14 +35,14 @@ window.addEventListener("load", () => {
                         `);
           // VACIANDO CONTENEDOR DE USUARIOS ENCONTRADOS
           CONT_USERS_FOUND.innerHTML = "";
-
+          console.log(usuarios)
           Array.from(usuarios).forEach((usuario) => {
             if (
               usuario._id !=
               MessageInMessagePanel.currentMessage
                 ?.currentOperationUserInformationID
             ) {
-              const usuarioEncontrado = new UserFound(usuario, socket);
+              new UserFound(usuario, socket);
             }
           });
         })
