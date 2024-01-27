@@ -298,7 +298,7 @@ class AnimacionAparicionYDesaparicion {
 
     estilosCSSAparicion.forEach((valor, clave) => {
       estilosAparicion += `${clave}: ${valor};`;
-    });    
+    });
 
     this.estilosCssAdicionales = insertarReglasCSSAdicionales(`
           
@@ -569,17 +569,17 @@ class AnimacionAparicionYDesaparicionConScale {
 /**
  * @param {HTMLElement} htmlElement
  * @param {number} duration
- * @param {Map} optionalStyleToAppear
- * 
+ * @param {Object} optionalStyleToAppear
+ *
  */
-function resaltWithBorder(htmlElement, duration, optionalStyleToAppear = new Map()){
+function resaltWithBorder(htmlElement, duration, optionalStyleToAppear = {}) {
   return htmlElement.animate(
     [
       { filter: "brightness(0.8)", outline: "2px solid rgb(211, 85, 85)" },
       { filter: "brightness(0.8)", outline: "2px solid rgb(211, 85, 85)" },
       { filter: "brightness(0.8)", outline: "2px solid rgb(211, 85, 85)" },
-      { filter: "none", ...MapToObject(optionalStyleToAppear)},
-      { filter: "none", ...MapToObject(optionalStyleToAppear)},
+      { filter: "none", "outline-width": 0, ...optionalStyleToAppear },
+      { filter: "none", "outline-width": 0, ...optionalStyleToAppear },
     ],
     {
       easing: "ease-in",

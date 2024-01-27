@@ -109,13 +109,20 @@ async function setState(id, state) {
   }
 }
 
-async function getAleatoryUser(idExcept) {
+/**
+ *
+ * @param {string[]} idsExcept
+ * @returns
+ */
+async function getAleatoryUser(idsExcept) {
+
   try {
     return await temporaryUser.aggregate([
-      { $match: { _id: { $ne: idExcept } } }, // Excepcion para el idExcept
+      { $match: { _id: { $nin: idsExcept } } }, // Excepciones para el _id
       { $match: { state: { $in: [1, 2] } } }, // Filtrar por estado 1 o 2
       { $sample: { size: 1 } }, // Seleccionar un documento aleatorio de los resultados
     ]);
+
   } catch (error) {
     throw error;
   }
@@ -137,7 +144,6 @@ async function getSocketIDByID(userID) {
   }
 }
 
-
 module.exports = {
   add: addTemporaryUser,
   getUsersAmount: getUsersAmount,
@@ -147,5 +153,5 @@ module.exports = {
   setSocketIdConnection: setSocketIdConnection,
   setState: setState,
   getAleatoryUser: getAleatoryUser,
-  getSocketIDByID: getSocketIDByID
+  getSocketIDByID: getSocketIDByID,
 };

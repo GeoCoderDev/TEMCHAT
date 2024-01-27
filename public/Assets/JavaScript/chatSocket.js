@@ -108,11 +108,17 @@ delegarEvento("click", "#random-temchat-button", (e) => {
 
     MessageInMessagePanel.currentMessage.forceFinish(4);
     return MessageInMessagePanel.currentMessage.finish.then(() => {
-      socket.emit("GET-ALEATORY-USER");
+      socket.emit(
+        "GET-ALEATORY-USER",
+        JSON.stringify(ChatRequest.requestIDs)
+      );
     });
   }
 
-  socket.emit("GET-ALEATORY-USER");
+  socket.emit(
+    "GET-ALEATORY-USER",
+    JSON.stringify(ChatRequest.requestIDs)
+  );
 });
 
 /**
@@ -183,7 +189,10 @@ delegarEvento("click", "#random-temchat-persistente-button", (e) => {
     if (eventIdActual)
       MANAGER.NuevoChatRequest.removeEventListener(eventIdActual);
 
-    socket.emit("GET-ALEATORY-USER");
+    socket.emit(
+      "GET-ALEATORY-USER",
+      JSON.stringify(ChatRequest.requestIDs)
+    );
 
     eventIdActual = MANAGER.NuevoChatRequest.addEventListener(
       (messageInPanel) => {

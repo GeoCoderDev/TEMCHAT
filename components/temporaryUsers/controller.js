@@ -71,9 +71,14 @@ async function getUserByUsername(username) {
   }
 }
 
-async function getAleatoryUser(idExcept) {
+/**
+ * 
+ * @param {string[]} idsExcept 
+ * @returns 
+ */
+async function getAleatoryUser(idsExcept) {
   try {
-    return await store.getAleatoryUser(idExcept);
+    return await store.getAleatoryUser(idsExcept);
   } catch (error) {
     throw error;
   }

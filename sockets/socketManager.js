@@ -1,4 +1,5 @@
 const socketIo = require("socket.io");
+const {Types:{ ObjectId }} = require('mongoose');
 const temporaryUsersController = require("../components/temporaryUsers/controller");
 
 
@@ -32,9 +33,14 @@ function socketManager(server) {
 
           console.log(`${MI_USER_DATA.username} conectado`);
 
-          socket.on("GET-ALEATORY-USER", () => {
+          socket.on("GET-ALEATORY-USER", (pendingRequestsIDs) => {
+
+            let Pending_Requests_IDs = pendingRequestsIDs?JSON.parse(pendingRequestsIDs): [];
+            
+            Pending_Requests_IDs = Pending_Requests_IDs.map(request_id=>new ObjectId(request_id));
+
             temporaryUsersController
-              .getAleatoryUser(MI_USER_DATA._id)
+              .getAleatoryUser([MI_USER_DATA._id, ...Pending_Requests_IDs])
               .then((usuarioAleatorio) => {
                 socket.emit(
                   "TAKE-YOUR-ALEATORY-USER",

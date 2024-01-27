@@ -46,7 +46,8 @@ export class UserFound {
         if (ChatRequest.requestIDs.indexOf(user_info._id) !== -1) {
           return resaltWithBorder(
             ChatRequest.allRequests.get(user_info._id).componenteHTML,
-            0.7, new Map([["filter","filter: saturate(2)"]])
+            0.7,
+            { filter: "saturate(2)" }
           );
         }
 
