@@ -1,3 +1,4 @@
+import { ChatRequest } from "./ChatRequest(class).js";
 import { MessageInMessagePanel } from "./MessageInMessagePanel(class).js";
 
 export const CONT_USERS_FOUND = document.getElementById(
@@ -5,16 +6,14 @@ export const CONT_USERS_FOUND = document.getElementById(
 );
 
 export class UserFound {
-
   /**
-   * 
+   *
    * @param {object} user_info
    * @param {string} user_info._id
    * @param {string} user_info.username
-   * @param {*} mySocket 
+   * @param {*} mySocket
    */
   constructor(user_info, mySocket) {
-    
     const usuarioEncontradoHTML = document.createElement("div");
     usuarioEncontradoHTML.id = `US-${user_info._id}`;
     usuarioEncontradoHTML.classList.add("cont-user-found");
@@ -44,6 +43,12 @@ export class UserFound {
         return MessageInMessagePanel.resaltar(0.7);
 
       const enviarSolicitud = () => {
+        if (ChatRequest.requestIDs.indexOf(user_info._id) !== -1) {
+          return resaltWithBorder(
+            ChatRequest.allRequests.get(user_info._id).componenteHTML,
+            0.7, new Map([["filter","filter: saturate(2)"]])
+          );
+        }
 
         mySocket.emit("(SERVER)REQUEST-FOR-X-USER", user_info.username);
 
@@ -60,7 +65,6 @@ export class UserFound {
         requestButtonHMTL.classList.add("solicitud-enviada-button");
 
         UserFound.userFoundRequestedCurrent = this;
-
       };
 
       if (MessageInMessagePanel.currentMessage) {

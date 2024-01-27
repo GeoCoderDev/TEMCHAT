@@ -299,4 +299,26 @@ function generarIdUnico(length) {
     return Array.from(bytes)
       .map((byte) => byte.toString(16).padStart(2, "0"))
       .join("");
-  }
+}
+
+/**
+ * 
+ * @param {Map} map 
+ * @returns {string}
+ */
+function MapToStringCSS(map){
+    let cadena = "";
+    for(let [key, value] of map.entries()){
+        cadena += `${key}: ${value};`;
+    }
+    return cadena;
+}
+
+/**
+ * 
+ * @param {Map} map 
+ * @returns {Object}
+ */
+function MapToObject(map){
+    return Object.fromEntries([...map]);
+}

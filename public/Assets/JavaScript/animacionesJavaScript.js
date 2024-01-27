@@ -565,3 +565,27 @@ class AnimacionAparicionYDesaparicionConScale {
     if (Resolver) this.#promiseFinishedResolve();
   }
 }
+
+/**
+ * @param {HTMLElement} htmlElement
+ * @param {number} duration
+ * @param {Map} optionalStyleToAppear
+ * 
+ */
+function resaltWithBorder(htmlElement, duration, optionalStyleToAppear = new Map()){
+  return htmlElement.animate(
+    [
+      { filter: "brightness(0.8)", outline: "2px solid rgb(211, 85, 85)" },
+      { filter: "brightness(0.8)", outline: "2px solid rgb(211, 85, 85)" },
+      { filter: "brightness(0.8)", outline: "2px solid rgb(211, 85, 85)" },
+      { filter: "none", ...MapToObject(optionalStyleToAppear)},
+      { filter: "none", ...MapToObject(optionalStyleToAppear)},
+    ],
+    {
+      easing: "ease-in",
+      duration: duration * 1000,
+      iterations: 1,
+      fill: "forwards",
+    }
+  ).finished;
+}

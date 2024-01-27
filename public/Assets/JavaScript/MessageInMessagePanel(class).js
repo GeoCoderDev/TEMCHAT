@@ -5,7 +5,6 @@ import { UserFound } from "./UserFound(Class).js";
 const MESSAGE_PANEL = document.getElementById("messages-panel");
 
 export class MessageInMessagePanel {
-
   static currentMessage;
 
   animacion;
@@ -19,7 +18,7 @@ export class MessageInMessagePanel {
    * @param {String} dotsColor
    * @param {number} dotAnimationDuration en segundos
    * @param {boolean} mostrarDuracion
-   * @param {'unknow' | 'UsNF'} type 
+   * @param {'unknow' | 'UsNF'} type
    */
   constructor(
     message,
@@ -30,7 +29,7 @@ export class MessageInMessagePanel {
     dotsColor = "black",
     dotAnimationDuration = 0.3,
     mostrarDuracion = false,
-    type = 'unknow'
+    type = "unknow"
   ) {
     const mensajeHTML = document.createElement("div");
     mensajeHTML.classList.add("mesagge-in-panel");
@@ -118,9 +117,9 @@ export class MessageInMessagePanel {
      *
      * @param { 0 | 1 | 2 | 3 | 4} state 0 para cuando te ha rechazado, 1 para cuando te acepto la solicitud, 2 para cuando rechazas tu, 3 para cuando se acaba el tiempo y 4 para cuando quieres rechazar o finalizar un mensaje sin causar nada
      */
-    const finalizarMensaje = (state = undefined) => {   
+    const finalizarMensaje = (state = undefined) => {
       if (this.seFinalizoElMensaje) return;
-      
+
       if (dotsAnimationID) clearInterval(dotsAnimationID);
 
       this.seFinalizoElMensaje = true;
@@ -170,8 +169,8 @@ export class MessageInMessagePanel {
         if (cancelButtonHTML) {
           cancelButtonHTML.addEventListener("click", (e) => {
             // if(!UserFound.userFoundRequestedCurrent) return;
-            e.target.setAttribute('disabled',true);
-            console.log(e.target)
+            e.target.setAttribute("disabled", true);
+            console.log(e.target);
             finalizarMensaje(2);
           });
         }
@@ -202,8 +201,7 @@ export class MessageInMessagePanel {
 
         if (cancelButtonHTML) {
           cancelButtonHTML.addEventListener("click", (e) => {
-            e.target.setAttribute('disabled',true);
-            console.log(e.target);
+            e.target.setAttribute("disabled", true);
             finalizarMensaje(2);
           });
         }
@@ -217,27 +215,15 @@ export class MessageInMessagePanel {
         console.log(e);
       });
   }
+
+  
+
+  /**
+   *
+   * @param {Number} duration en segundos
+   */
+  static resaltar(duration) {
+    return resaltWithBorder(MESSAGE_PANEL, duration);
+  }
+
 }
-
-/**
- *
- * @param {Number} duration en segundos
- */
-
-MessageInMessagePanel.resaltar = (duration) => {
-  MESSAGE_PANEL.animate(
-    [
-      { filter: "brightness(0.8)", border: "2px solid rgb(211, 85, 85)" },
-      { filter: "brightness(0.8)", border: "2px solid rgb(211, 85, 85)" },
-      { filter: "brightness(0.8)", border: "2px solid rgb(211, 85, 85)" },
-      { filter: "none" },
-      { filter: "none" },
-    ],
-    {
-      easing: "ease-in",
-      duration: duration * 1000,
-      iterations: 1,
-      fill: "forwards",
-    }
-  );
-};

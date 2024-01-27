@@ -32,10 +32,10 @@ socket.emit("MY-USERNAME", myUsername);
 socket.on(
   "TEMCHAT-REQUEST-FOR-YOU",
   (requesterUserData, type, waitTimeRequest) => {
-
-    const REQUESTER_DATA = JSON.parse(requesterUserData);    
+    const REQUESTER_DATA = JSON.parse(requesterUserData);
     console.log(ChatRequest.allRequests.has(REQUESTER_DATA._id));
-    if(ChatRequest.allRequests.has(REQUESTER_DATA._id)) return socket.emit("(SERVER)REQUEST-ALREADY-RECEIVED");
+    if (ChatRequest.allRequests.has(REQUESTER_DATA._id))
+      return socket.emit("(SERVER)REQUEST-ALREADY-RECEIVED");
 
     const MI_USER_DATA = JSON.parse(sessionStorage.getItem("USER-DATA"));
 
@@ -100,23 +100,19 @@ socket.on("CANCEL-REQUEST-FROM-X-USER", (userInfo) => {
 
 // SOCKET PARA ENVIAR UNA SOLICITUD A USUARIO ALEATORIO
 delegarEvento("click", "#random-temchat-button", (e) => {
-  
   if (MessageInMessagePanel.currentMessage?.currentOperationUserInformationID)
     return MessageInMessagePanel.resaltar(0.7);
 
   if (MessageInMessagePanel.currentMessage) {
-
-    if(MessageInMessagePanel.currentMessage.type==='UsNF') return;
+    if (MessageInMessagePanel.currentMessage.type === "UsNF") return;
 
     MessageInMessagePanel.currentMessage.forceFinish(4);
     return MessageInMessagePanel.currentMessage.finish.then(() => {
       socket.emit("GET-ALEATORY-USER");
     });
-
   }
 
   socket.emit("GET-ALEATORY-USER");
-
 });
 
 /**
@@ -169,6 +165,12 @@ delegarEvento("click", "#random-temchat-persistente-button", (e) => {
   if (MessageInMessagePanel.currentMessage?.currentOperationUserInformationID)
     return MessageInMessagePanel.resaltar(0.7);
 
+  if (
+    MessageInMessagePanel.currentMessage &&
+    MessageInMessagePanel.currentMessage.type === "UsNF"
+  )
+    MessageInMessagePanel.currentMessage.forceFinish(4);
+
   MANAGER.PERSISTENCIA_CHAT_RANDOM_ACTIVADO = true;
 
   e.target.innerText = "DESACTIVAR CHAT ALEATORIO PERSISTENTE";
@@ -208,7 +210,7 @@ socket.on("TAKE-YOUR-ALEATORY-USER", (aleatoryUser) => {
       undefined,
       undefined,
       undefined,
-      'UsNF'
+      "UsNF"
     );
   } else {
     const aleatoryUserObject = JSON.parse(aleatoryUser);

@@ -16,7 +16,7 @@ export class ChatRequest {
   constructor(userData, waitTime) {
     if (!userData._id) return null;
     if (ChatRequest.allRequests.has(userData._id)) return null;
-
+    this.userData = userData;
     const componenteHTML = document.createElement("div");
     this.requesterUserID = userData._id;
     componenteHTML.classList.add("request");
@@ -99,7 +99,7 @@ export class ChatRequest {
       );
     });
 
-      ChatRequest.allRequests.set(userData._id, this);
+    ChatRequest.allRequests.set(userData._id, this);
 
     this.#desplegarElemento();
 
@@ -181,4 +181,18 @@ export class ChatRequest {
       chatRequest.desvanecerElemento();
     }
   }
+
+  static get requestUsernames() {
+    return Array.from(ChatRequest.allRequests.values()).map(
+      (req) => req.userData.username
+    );
+  }
+
+  static get requestIDs(){
+    return Array.from(ChatRequest.allRequests.values()).map(
+      (req) => req.userData._id
+    );
+  }
+
 }
+
