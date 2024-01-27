@@ -98,7 +98,7 @@ export class Temchat {
       }, DELAY_FOR_COUNTDOWNTIMER * 1000);
     });
 
-    this.finishedForMe = new Promise((resolve, reject) => {
+    this.finishedByMe = new Promise((resolve, reject) => {
       delegarEvento(
         "click",
         `#${this.componenteHTML.id} .finished-temchat-button`,

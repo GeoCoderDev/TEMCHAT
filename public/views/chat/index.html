@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MAIN | TEMCHAT</title>
-    <link rel="stylesheet" href="../../Assets/CSS/chat.css" />
+    <link rel="stylesheet" href="/Assets/CSS/chat.css" />
     <link
       rel="shortcut icon"
-      href="../../Assets/Images/Logo con Borde mas Grueso con fondo.svg"
+      href="/Assets/Images/Logo con Borde mas Grueso con fondo.svg"
       type="image/x-icon"
     />
   </head>
@@ -43,11 +43,11 @@
                     CHAT ALEATORIO
                   </button>
                   <div class="contenedor-input-time-request">
-                    <h5 class="input-time-label">Tiempo</h5>
+                    <h5 class="input-time-label">Tiempo (Segundos)</h5>
                     <input
                       type="number"
                       id="random-temchat-time"
-                      min="5"                      
+                      min="5"
                       max="60"
                       value="10"
                     />
@@ -62,7 +62,7 @@
                     CHAT ALEATORIO PERSISTENTE
                   </button>
                   <div class="contenedor-input-time-request">
-                    <h5 class="input-time-label">Tiempo</h5>
+                    <h5 class="input-time-label">Tiempo (Segundos)</h5>
                     <input
                       type="number"
                       id="random-temchat-persistent-time"
@@ -117,8 +117,7 @@
           <div class="icono-acceso"><span class="icon-search2"></span></div>
         </div>
 
-        <div id="messages-panel">
-        </div>
+        <div id="messages-panel"></div>
       </div>
     </div>
 
@@ -130,32 +129,31 @@
 
     <div id="Puerta-2"></div>
 
-    <script src="../../Assets/JavaScript/AutoSizeTextAreas.js"></script>
+    <script src="/Assets/JavaScript/AutoSizeTextAreas.js"></script>
+    <script type="module" src="/Assets/JavaScript/ChatEvent(Class).js"></script>
+    <script
+      src="/Assets/JavaScript/ChatStateManager(Singleton class).js"
+      type="module"
+    ></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="../../Assets/JavaScript/Funciones.js"></script>
-    <script src="./../../Assets/JavaScript/trucoURL.js"></script>
-    <script src="../../Assets/JavaScript/Chat-main.js" type="module"></script>
-    <script src="../../Assets/JavaScript/delegacionDeEventos.js"></script>
-    <script src="../../Assets/JavaScript/animacionesJavaScript.js"></script>
+    <script src="/Assets/JavaScript/Funciones.js"></script>
+    <script src="/Assets/JavaScript/trucoURL.js"></script>
+    <script src="/Assets/JavaScript/Chat-main.js" type="module"></script>
+    <script src="/Assets/JavaScript/delegacionDeEventos.js"></script>
+    <script src="/Assets/JavaScript/animacionesJavaScript.js"></script>
     <script
-      src="../../Assets/JavaScript/ChatRequest(class).js"
+      src="/Assets/JavaScript/ChatRequest(class).js"
+      type="module"
+    ></script>
+    <script src="/Assets/JavaScript/Temchat(Class).js" type="module"></script>
+    <script src="/Assets/JavaScript/chatSocket.js" type="module"></script>
+    <script src="/Assets/JavaScript/UserFound(Class).js" type="module"></script>
+    <script
+      src="/Assets/JavaScript/MessageInMessagePanel(class).js"
       type="module"
     ></script>
     <script
-      src="../../Assets/JavaScript/Temchat(Class).js"
-      type="module"
-    ></script>
-    <script src="../../Assets/JavaScript/chatSocket.js" type="module"></script>
-    <script
-      src="../../Assets/JavaScript/UserFound(Class).js"
-      type="module"
-    ></script>
-    <script
-      src="../../Assets/JavaScript/MessageInMessagePanel(class).js"
-      type="module"
-    ></script>
-    <script
-      src="../../Assets/JavaScript/Eventos y Funcionalidades.js"
+      src="/Assets/JavaScript/Eventos y Funcionalidades.js"
       type="module"
     ></script>
   </body>

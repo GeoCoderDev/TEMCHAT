@@ -5,8 +5,11 @@ import { UserFound } from "./UserFound(Class).js";
 const MESSAGE_PANEL = document.getElementById("messages-panel");
 
 export class MessageInMessagePanel {
-  animacion;
 
+  static currentMessage;
+
+  animacion;
+  seFinalizoElMensaje = false;
   /**
    *
    * @param {string} message
@@ -14,7 +17,9 @@ export class MessageInMessagePanel {
    * @param {boolean} cancelButton
    * @param {String} currentOperationUserInformation debe estar en formato String(JSON)
    * @param {String} dotsColor
-   * @param {Number} dotAnimationDuration en segundos
+   * @param {number} dotAnimationDuration en segundos
+   * @param {boolean} mostrarDuracion
+   * @param {'unknow' | 'UsNF'} type 
    */
   constructor(
     message,
@@ -23,13 +28,17 @@ export class MessageInMessagePanel {
     currentOperationUserInformation = undefined,
     threeDotsAnimation = false,
     dotsColor = "black",
-    dotAnimationDuration = 0.3
+    dotAnimationDuration = 0.3,
+    mostrarDuracion = false,
+    type = 'unknow'
   ) {
     const mensajeHTML = document.createElement("div");
     mensajeHTML.classList.add("mesagge-in-panel");
     mensajeHTML.style.position = "absolute";
     mensajeHTML.style.opacity = 0;
     mensajeHTML.insertAdjacentText("afterbegin", message);
+
+    this.type = type;
 
     let dotsAnimationStart;
     let dotsAnimationID;
@@ -84,10 +93,10 @@ export class MessageInMessagePanel {
       );
 
       this.currentOperationUserInformationID =
-      currentOperationUserInformationObject._id;
+        currentOperationUserInformationObject._id;
 
       this.currentOperationUserInformationUsername =
-      currentOperationUserInformationObject.username;
+        currentOperationUserInformationObject.username;
     }
 
     let cancelButtonHTML;
@@ -107,9 +116,15 @@ export class MessageInMessagePanel {
 
     /**
      *
-     * @param {0 | 1} state 0 para cuando se ha rechazado y 1 para cuando se acepto la solicitud
+     * @param { 0 | 1 | 2 | 3 | 4} state 0 para cuando te ha rechazado, 1 para cuando te acepto la solicitud, 2 para cuando rechazas tu, 3 para cuando se acaba el tiempo y 4 para cuando quieres rechazar o finalizar un mensaje sin causar nada
      */
-    const finalizarMensaje = (state = undefined) => {
+    const finalizarMensaje = (state = undefined) => {   
+      if (this.seFinalizoElMensaje) return;
+      
+      if (dotsAnimationID) clearInterval(dotsAnimationID);
+
+      this.seFinalizoElMensaje = true;
+
       // Reanudando para desaparecer
       this.animacion.iniciar();
 
@@ -120,16 +135,17 @@ export class MessageInMessagePanel {
         document
           .querySelector(`#${MESSAGE_PANEL.id} .mesagge-in-panel`)
           .remove();
-
+        mensajeHTML.innerHTML = "";
       });
 
-      if (dotsAnimationID) clearInterval(dotsAnimationID);
-
       // if (!currentOperationUserInformation || state) return;
-      socket.emit(
-        "(SERVER)CANCEL-REQUEST-FOR-X-USER",
-        this.currentOperationUserInformationUsername
-      );
+      if (state == 2)
+        socket.emit(
+          "(SERVER)CANCEL-REQUEST-FOR-X-USER",
+          this.currentOperationUserInformationUsername
+        );
+
+      if (state != 3 && this.cronometro) this.cronometro.forceFinish();
     };
 
     // Este metodo se usara para cuando se necesite cancelar
@@ -152,9 +168,11 @@ export class MessageInMessagePanel {
         }
 
         if (cancelButtonHTML) {
-          cancelButtonHTML.addEventListener("click", () => {
+          cancelButtonHTML.addEventListener("click", (e) => {
             // if(!UserFound.userFoundRequestedCurrent) return;
-            finalizarMensaje();
+            e.target.setAttribute('disabled',true);
+            console.log(e.target)
+            finalizarMensaje(2);
           });
         }
       });
@@ -163,8 +181,15 @@ export class MessageInMessagePanel {
     }
 
     // EN CASO SI HAYA DURACION
-
-    const cronometro = new CountdownTimer(duration, 1, false);
+    if (mostrarDuracion) {
+      const span = document.createElement("span");
+      span.innerText = duration;
+      span.classList.add("numeros-duracion-mensaje-en-panel");
+      mensajeHTML.insertAdjacentElement("afterbegin", span);
+      this.cronometro = new CountdownTimer(duration, 1, true, 0, span);
+    } else {
+      this.cronometro = new CountdownTimer(duration, 1, false);
+    }
 
     MESSAGE_PANEL.appendChild(mensajeHTML);
 
@@ -176,15 +201,17 @@ export class MessageInMessagePanel {
         }
 
         if (cancelButtonHTML) {
-          cancelButtonHTML.addEventListener("click", () => {
-            cronometro.forceFinish();
+          cancelButtonHTML.addEventListener("click", (e) => {
+            e.target.setAttribute('disabled',true);
+            console.log(e.target);
+            finalizarMensaje(2);
           });
         }
 
-        return cronometro.start();
+        return this.cronometro.start();
       })
       .then(() => {
-        finalizarMensaje();
+        finalizarMensaje(3);
       })
       .catch((e) => {
         console.log(e);

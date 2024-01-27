@@ -48,16 +48,20 @@ window.addEventListener("load", () => {
   document.documentElement.style.setProperty(variableName, altoPantallaVisible);
 });
 
-window.addEventListener("resize",()=>{
+window.addEventListener("resize", () => {
+  if (!altoPantallaVisible) return;
 
-  if(!altoPantallaVisible) return;
-
-  if(parseFloat(window.innerHeight) > parseFloat(altoPantallaVisible)){
-    document.documentElement.style.setProperty(variableName, window.innerHeight + "px");
-  }else{
-    document.documentElement.style.setProperty(variableName, altoPantallaVisible);
+  if (parseFloat(window.innerHeight) > parseFloat(altoPantallaVisible)) {
+    document.documentElement.style.setProperty(
+      variableName,
+      window.innerHeight + "px"
+    );
+  } else {
+    document.documentElement.style.setProperty(
+      variableName,
+      altoPantallaVisible
+    );
   }
-
 });
 
 export function cerrarPuertas(duracionSegundos, easing = "ease-in") {

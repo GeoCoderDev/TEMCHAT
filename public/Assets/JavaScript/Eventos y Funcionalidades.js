@@ -35,7 +35,7 @@ window.addEventListener("load", () => {
                         `);
           // VACIANDO CONTENEDOR DE USUARIOS ENCONTRADOS
           CONT_USERS_FOUND.innerHTML = "";
-          console.log(usuarios)
+          // console.log(usuarios)
           Array.from(usuarios).forEach((usuario) => {
             if (
               usuario._id !=

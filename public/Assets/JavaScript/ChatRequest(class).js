@@ -8,10 +8,14 @@ const CANTIDAD_SOLICITUDES_HTML = document.getElementById(
 );
 
 export class ChatRequest {
+  static allRequests = new Map();
+
   animacion;
+  cuentaRegresiva = undefined;
 
   constructor(userData, waitTime) {
     if (!userData._id) return null;
+    if (ChatRequest.allRequests.has(userData._id)) return null;
 
     const componenteHTML = document.createElement("div");
     this.requesterUserID = userData._id;
@@ -59,35 +63,43 @@ export class ChatRequest {
         }
       );
 
-      // BOTON RECHAZAR
-      this.buttonRejectEventID = delegarEvento(
-        "click",
-        `.${this.nombreClaseAdicional} .request-button:nth-child(2)`,
-        () => {
-          this.desvanecerElemento();
-          reject();
-        }
-      );
-
       if (waitTime) {
-        console.log(waitTime)
         const contenedorConteo = document.querySelector(
           `.${this.nombreClaseAdicional} .time-request`
         );
-        const cuentaRegresiva = new CountdownTimer(waitTime,1,true,0,contenedorConteo);
-        cuentaRegresiva.start().then(() => {
+        this.cuentaRegresiva = new CountdownTimer(
+          waitTime,
+          1,
+          true,
+          0,
+          contenedorConteo
+        );
+
+        this.cuentaRegresiva.start().then((info) => {
           this.desvanecerElemento().then(() => {
             // SOLO SE RECHAZARA LA PROMESA CUANDO LA ANIMACION FINALIZE
             // LO CUAL HARA QUE NO SE EMITA EL SOCKET DE TEMCHAT
             // A NO SER QUE EL USUARIO HAGA CLIC EN ACEPTAR
             // EN EL UTLIMO MOMENTO (QUE CRACK)
+            if (info?.sinRechazar) return;
             reject();
           });
         });
       }
+
+      // BOTON RECHAZAR
+      this.buttonRejectEventID = delegarEvento(
+        "click",
+        `.${this.nombreClaseAdicional} .request-button:nth-child(2)`,
+        () => {
+          if (this.cuentaRegresiva) return this.cuentaRegresiva.forceFinish();
+          this.desvanecerElemento();
+          reject();
+        }
+      );
     });
 
-    ChatRequest.allRequests.set(userData._id, this);
+      ChatRequest.allRequests.set(userData._id, this);
 
     this.#desplegarElemento();
 
@@ -139,6 +151,16 @@ export class ChatRequest {
     return this.animacion.finished;
   }
 
+  eliminarPorCancelacion() {
+    //Cancelamos el cronometro sin que rechaze la solicitud, puesto que el otro usuario
+    //cancelo su solicitud no tu
+    if (this.cuentaRegresiva)
+      this.cuentaRegresiva.forceFinish({ sinRechazar: true });
+    return this.desvanecerElemento();
+  }
+
+  #mensajeDeCancelacionPorParteDelOtroUsuario() {}
+
   // #setRequest(){
   //     if(!ChatRequest.allRequests) ChatRequest.allRequests = [];
   //     ChatRequest.allRequests.push(this)
@@ -153,6 +175,10 @@ export class ChatRequest {
   //           }
   //     }
   // }
-}
 
-ChatRequest.allRequests = new Map();
+  static rejectAllRequest() {
+    for (let chatRequest of ChatRequest.allRequests.values()) {
+      chatRequest.desvanecerElemento();
+    }
+  }
+}

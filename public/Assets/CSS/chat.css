@@ -1,10 +1,10 @@
 /* FUENTES */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@100;300;400;500;700;800;900&display=swap");
-@import url("../../Assets/Fonts/dobleMensaje Icono/style.css");
-@import url("../../Assets/Fonts/Varios Iconos/style.css");
-@import url("../../Assets/Fonts/Lupas/style.css");
-@import url("../../Assets/Fonts/Aleatorio/style.css");
+@import url("/Assets/Fonts/dobleMensaje Icono/style.css");
+@import url("/Assets/Fonts/Varios Iconos/style.css");
+@import url("/Assets/Fonts/Lupas/style.css");
+@import url("/Assets/Fonts/Aleatorio/style.css");
 
 * {
   margin: 0;  
@@ -308,7 +308,7 @@ header {
 }
 
 .contenedor-input-time-request {
-  margin-top: max(0.8vh, 0.8vw);
+  margin-top: max(0.8vh, 0.6vw);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -461,11 +461,21 @@ header {
   border-radius: min(1vw, 1vh);
   margin-left: max(1vh, 1vw);
   cursor: pointer !important;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
 }
 
 .dot-for-animation-in-message {
   color: transparent;
+}
+
+.numeros-duracion-mensaje-en-panel{
+  font-size: max(1.8vh, 0.9rem);
+  color: white;
+  background-color: rgb(211, 85, 85);
+  padding: 0.4rem 0;
+  width: 2.2rem;
+  border-radius: 0.5rem;
+  margin-right: 1rem;
 }
 
 /* LIVE-TEMCHAT */
@@ -760,6 +770,17 @@ header {
   width: 70%;
   word-wrap: normal;
   font-size: 1vw;
+  outline: none;
+}
+
+.botones-chat-random:disabled{
+  filter: brightness(0.8);
+  cursor: inherit;
+}
+
+#contenedor-sections-chat-random input:disabled{
+  filter: brightness(0.8);
+  cursor: inherit;
 }
 
 /* VENTANA MODAL */

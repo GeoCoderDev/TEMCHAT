@@ -85,7 +85,7 @@ form[name="entry-form"] #cont-presentacion h1 {
 }
 
 form[name="entry-form"] #cont-presentacion #logo-temchat {
-  background-image: url("../../Assets//Images/Logo\ TEMCHAT\ sin\ fondo.svg");
+  background-image: url("/Assets//Images/Logo\ TEMCHAT\ sin\ fondo.svg");
   height: 80px;
   width: 80px;
   background-size: contain;

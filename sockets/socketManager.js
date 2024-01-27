@@ -1,5 +1,4 @@
 const socketIo = require("socket.io");
-const uuid = require("uuid");
 const temporaryUsersController = require("../components/temporaryUsers/controller");
 
 
@@ -139,6 +138,8 @@ function socketManager(server) {
           socket.on("DELETE-USER-FROM-DATABASE", () => {
             temporaryUsersController.deleteTemporaryUser(MI_USER_DATA._id);
           });
+
+
         })
         .catch((err) => {
           console.error(err);
@@ -149,6 +150,7 @@ function socketManager(server) {
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });
+
   });
 }
 

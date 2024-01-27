@@ -1,10 +1,12 @@
+const EVENTOS_USADOS = ["mousemove", "change"];
+
 // EL "BODY" SIRVE COMO CHIVO EXPIATORIO PARA QUE NO HAGA MATCH EN CASO LO QUE SEA EL PRIMER PARAMETRO SEA UN
 // ELEMENTO HTML , ASI QUE DARA FALSO SIEMPRE QUE SE DEA ESTE CASO YA QUE NUNCA SE PASARIA BODY COMO SELECTOR
 // Y SE PROCEDERIA A LA SIGUIENTE PROPOSICION LA CUAL SERIA EXCLUSIVAMENTE PARA ELEMENTOS HTML
 
 // EVENTO CLICK
 
-var mapaDeEventosClick = new Map();
+EventoClick: var mapaDeEventosClick = new Map();
 var eventosClickID = 0;
 
 function agregarEventoClick(querySelectorOElementoHTML, callback) {
@@ -16,7 +18,6 @@ function agregarEventoClick(querySelectorOElementoHTML, callback) {
 }
 
 document.addEventListener("click", (e) => {
-  e.stopPropagation();
   mapaDeEventosClick.forEach((Evento) => {
     if (
       e.target.matches(
@@ -33,7 +34,7 @@ document.addEventListener("click", (e) => {
 
 // EVENTO MOUSEMOVE
 
-var mapaDeEventosMouseMove = new Map();
+EventoMouseMove: var mapaDeEventosMouseMove = new Map();
 var eventosMouseMoveID = 0;
 
 function agregarEventoMouseMove(querySelectorOElementoHTML, callback) {
@@ -60,8 +61,7 @@ document.addEventListener("mousemove", (e) => {
 });
 
 // EVENTO MOUSEOUT
-
-var mapaDeEventosMouseOut = new Map();
+EventoMouseOut: var mapaDeEventosMouseOut = new Map();
 var eventosMouseOutID = 0;
 
 function agregarEventoMouseOut(querySelectorOElementoHTML, callback) {
@@ -88,8 +88,7 @@ document.addEventListener("mouseout", (e) => {
 });
 
 // EVENTO MOUSEDOWN
-
-var mapaDeEventosMouseDown = new Map();
+EventoMouseDown: var mapaDeEventosMouseDown = new Map();
 var eventosMouseDownID = 0;
 
 function agregarEventoMouseDown(querySelectorOElementoHTML, callback) {
@@ -116,8 +115,7 @@ document.addEventListener("mousedown", (e) => {
 });
 
 // EVENTO MOUSEUP
-
-var mapaDeEventosMouseUp = new Map();
+EventoMouseUp: var mapaDeEventosMouseUp = new Map();
 var eventosMouseUpID = 0;
 
 function agregarEventoMouseUp(querySelectorOElementoHTML, callback) {
@@ -144,8 +142,7 @@ document.addEventListener("mouseup", (e) => {
 });
 
 // EVENTO MOUSEENTER
-
-var mapaDeEventosMouseEnter = new Map();
+EventoMouseEnter: var mapaDeEventosMouseEnter = new Map();
 var eventosMouseEnterID = 0;
 
 function agregarEventoMouseEnter(querySelectorOElementoHTML, callback) {
@@ -172,8 +169,7 @@ document.addEventListener("mouseenter", (e) => {
 });
 
 // EVENTO MOUSEOVER
-
-var mapaDeEventosMouseOver = new Map();
+EventoMouseOver: var mapaDeEventosMouseOver = new Map();
 var eventosMouseOverID = 0;
 
 function agregarEventoMouseOver(querySelectorOElementoHTML, callback) {
@@ -200,8 +196,7 @@ document.addEventListener("mouseover", (e) => {
 });
 
 // EVENTO TOUCHSTART
-
-var mapaDeEventosTouchStart = new Map();
+EventoTouchStart: var mapaDeEventosTouchStart = new Map();
 var eventosTouchStartID = 0;
 
 function agregarEventoTouchStart(querySelectorOElementoHTML, callback) {
@@ -228,8 +223,7 @@ document.addEventListener("touchstart", (e) => {
 });
 
 // EVENTO TOUCHMOVE
-
-var mapaDeEventosTouchMove = new Map();
+EventoTouchMove: var mapaDeEventosTouchMove = new Map();
 var eventosTouchMoveID = 0;
 
 function agregarEventoTouchMove(querySelectorOElementoHTML, callback) {
@@ -256,8 +250,7 @@ document.addEventListener("touchmove", (e) => {
 });
 
 // EVENTO TOUCHEND
-
-var mapaDeEventosTouchEnd = new Map();
+EventoTouchEnd: var mapaDeEventosTouchEnd = new Map();
 var eventosTouchEndID = 0;
 
 function agregarEventoTouchEnd(querySelectorOElementoHTML, callback) {
@@ -283,21 +276,20 @@ document.addEventListener("touchend", (e) => {
   });
 });
 
-// EVENTO KEYDOWN
+//EVENTO CHANGE
+EventoChange: var mapaDeEventosChange = new Map();
+var eventosChangeID = 0;
 
-var mapaDeEventosKeyDown = new Map();
-var eventosKeyDownID = 0;
-
-function agregarEventoKeyDown(querySelectorOElementoHTML, callback) {
-  mapaDeEventosKeyDown.set(eventosKeyDownID, {
+function agregarEventoChange(querySelectorOElementoHTML, callback) {
+  mapaDeEventosChange.set(eventosChangeID, {
     selectorOElementoHTML: querySelectorOElementoHTML,
     callback: callback,
   });
-  return eventosKeyDownID++;
+  return eventosChangeID++;
 }
 
-document.addEventListener("keydown", (e) => {
-  mapaDeEventosKeyDown.forEach((Evento) => {
+document.addEventListener("change", (e) => {
+  mapaDeEventosChange.forEach((Evento) => {
     if (
       e.target.matches(
         typeof Evento.selectorOElementoHTML === "string"
@@ -311,21 +303,74 @@ document.addEventListener("keydown", (e) => {
   });
 });
 
-// EVENTO KEYUP
+//EVENTO INPUT
+EventoInput: var mapaDeEventosInput = new Map();
+var eventosInputID = 0;
 
-var mapaDeEventosKeyUp = new Map();
-var eventosKeyUpID = 0;
-
-function agregarEventoKeyUp(querySelectorOElementoHTML, callback) {
-  mapaDeEventosKeyUp.set(eventosKeyUpID, {
+function agregarEventoInput(querySelectorOElementoHTML, callback) {
+  mapaDeEventosInput.set(eventosInputID, {
     selectorOElementoHTML: querySelectorOElementoHTML,
     callback: callback,
   });
-  return eventosKeyUpID++;
+  return eventosInputID++;
+}
+
+document.addEventListener("input", (e) => {
+  mapaDeEventosInput.forEach((Evento) => {
+    if (
+      e.target.matches(
+        typeof Evento.selectorOElementoHTML === "string"
+          ? Evento.selectorOElementoHTML
+          : "body"
+      ) ||
+      e.target == Evento.selectorOElementoHTML
+    ) {
+      Evento.callback(e);
+    }
+  });
+});
+
+//EVENTO KEYUP
+EventoInput: var mapaDeEventosKeyup = new Map();
+var eventosKeyupID = 0;
+
+function agregarEventoKeyup(querySelectorOElementoHTML, callback) {
+  mapaDeEventosKeyup.set(eventosKeyupID, {
+    selectorOElementoHTML: querySelectorOElementoHTML,
+    callback: callback,
+  });
+  return eventosInputID++;
 }
 
 document.addEventListener("keyup", (e) => {
-  mapaDeEventosKeyUp.forEach((Evento) => {
+  mapaDeEventosKeyup.forEach((Evento) => {
+    if (
+      e.target.matches(
+        typeof Evento.selectorOElementoHTML === "string"
+          ? Evento.selectorOElementoHTML
+          : "body"
+      ) ||
+      e.target == Evento.selectorOElementoHTML
+    ) {
+      Evento.callback(e);
+    }
+  });
+});
+
+//EVENTO KEYDOWN
+EventoInput: var mapaDeEventosKeydown = new Map();
+var eventosKeydownID = 0;
+
+function agregarEventoKeydown(querySelectorOElementoHTML, callback) {
+  mapaDeEventosKeydown.set(eventosKeydownID, {
+    selectorOElementoHTML: querySelectorOElementoHTML,
+    callback: callback,
+  });
+  return eventosKeydownID++;
+}
+
+document.addEventListener("keydown", (e) => {
+  mapaDeEventosKeydown.forEach((Evento) => {
     if (
       e.target.matches(
         typeof Evento.selectorOElementoHTML === "string"
@@ -341,12 +386,16 @@ document.addEventListener("keyup", (e) => {
 
 /**
  *
- * @param {*} typeEvent aqui escoges que tipo de evento quieres agregar, ejemplo: click,mousemove,etc
- * @param {*} querySelector este parametro solicita un selector css para el/los elemento(s) que quieres que se aplique el evento
- * @param {*} callback funcion que se ejecutara cada vez que se dispare el evento
+ * @param {'click' | 'mousemove' | 'mouseout' | 'mousedown' | 'mouseup' | 'mouseenter' | 'mouseover' | 'touchstart' | 'touchmove' | 'touchend' | 'change' | 'input' | 'keyup' | 'keydown'} typeEvent aqui escoges que tipo de evento quieres agregar, ejemplo: click,mousemove,etc
+ * @param {String | HTMLElement} querySelectorOrElement este parametro solicita un selector css para el/los elemento(s) que quieres que se aplique el evento
+ * @param {Function} callback funcion que se ejecutara cada vez que se dispare el evento
  * @returns devuelve un Id del evento que añadiste, con el cual podras eliminar el evento mediante la funcion eliminarEventoDelegado
  */
-function delegarEvento(typeEvent, querySelectorOrElement, callback) {
+FuncionesDeDelegacion: function delegarEvento(
+  typeEvent,
+  querySelectorOrElement,
+  callback
+) {
   switch (typeEvent) {
     case "click":
       return agregarEventoClick(querySelectorOrElement, callback);
@@ -378,11 +427,17 @@ function delegarEvento(typeEvent, querySelectorOrElement, callback) {
     case "touchend":
       return agregarEventoTouchEnd(querySelectorOrElement, callback);
 
-    case "keydown":
-      return agregarEventoKeyDown(querySelectorOrElement, callback);
+    case "change":
+      return agregarEventoChange(querySelectorOrElement, callback);
+
+    case "input":
+      return agregarEventoInput(querySelectorOrElement, callback);
 
     case "keyup":
-      return agregarEventoKeyUp(querySelectorOrElement, callback);
+      return agregarEventoKeyup(querySelectorOrElement, callback);
+
+    case "keydown":
+      return agregarEventoKeydown(querySelectorOrElement, callback);
 
     default:
       console.log("Error 132, delegacionDeEvento.js");
@@ -390,6 +445,11 @@ function delegarEvento(typeEvent, querySelectorOrElement, callback) {
   }
 }
 
+/**
+ *
+ * @param {'click' | 'mousemove' | 'mouseout' | 'mousedown' | 'mouseup' | 'mouseenter' | 'mouseover' | 'touchstart' | 'touchmove' | 'touchend' | 'change' | 'input' | 'keyup' | 'keydown'} typeEvent
+ * @param {Number} idEvento
+ */
 function eliminarEventoDelegado(typeEvent, idEvento) {
   switch (typeEvent) {
     case "click":
@@ -432,11 +492,17 @@ function eliminarEventoDelegado(typeEvent, idEvento) {
       mapaDeEventosTouchEnd.delete(idEvento);
       break;
 
-    case "keydown":
-      mapaDeEventosKeyDown.delete(idEvento);
+    case "change":
+      return mapaDeEventosChange(idEvento);
+
+    case "input":
+      return mapaDeEventosInput(idEvento);
 
     case "keyup":
-      mapaDeEventosKeyUp.delete(idEvento);
+      return mapaDeEventosKeyup(idEvento);
+
+    case "keydown":
+      return mapaDeEventosKeydown(idEvento);
 
     default:
       console.log("Error 231, delegacionDeEvento.js");

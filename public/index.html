@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TEMCHAT</title>
-    <link rel="shortcut icon" href="Assets/Images/Logo con Borde mas Grueso con fondo.svg" type="image/x-icon">
-    <link rel="stylesheet" href="Assets/CSS/index.css">
+    <link
+      rel="shortcut icon"
+      href="/Assets/Images/Logo con Borde mas Grueso con fondo.svg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="/Assets/CSS/index.css" />
     <!-- <link rel="stylesheet" href="Assets/CSS/animate-css-rubberband.css"> -->
-    <link rel="stylesheet" href="Assets/CSS/animate-css-heartbeat.css">
-</head>
-<body>
-    
+    <link rel="stylesheet" href="/Assets/CSS/animate-css-heartbeat.css" />
+  </head>
+  <body>
     <div id="contenedor-todo">
-        
-        <img src="Assets/Images/Fondo-Ingreso.jpg" alt="Fondo">
+      <img src="/Assets/Images/Fondo-Ingreso.jpg" alt="Fondo" />
 
-        <form name="entry-form">
+      <form name="entry-form">
+        <div id="cont-presentacion">
+          <div id="logo-temchat" --class="animated heartBeat"></div>
+          <h1>Bienvenido a Temchat</h1>
+        </div>
 
-            <div id="cont-presentacion">
-                <div id="logo-temchat" --class="animated heartBeat">
-                </div>
-                <h1>Bienvenido a Temchat</h1>
-            </div>
-    
-    
-            <label for="username">Nombre de usuario temporal:
-                <input id="username" name="username" type="text" maxlength="30" placeholder="Ingresa tu nombre temporal" required>
-                <p id="mensaje-user">Usuario Temporal con ese nombre ya existe</p>
-            </label>
-                        
+        <label for="username"
+          >Nombre de usuario temporal:
+          <input
+            id="username"
+            name="username"
+            type="text"
+            maxlength="30"
+            placeholder="Ingresa tu nombre temporal"
+            required
+          />
+          <p id="mensaje-user">Usuario Temporal con ese nombre ya existe</p>
+        </label>
 
-            <button id="submitButton" name="submitButton" type="submit">Ingresar <span id="loader-ingreso"></span></button>
-    
-
-        </form>
-    
-
+        <button id="submitButton" name="submitButton" type="submit">
+          Ingresar <span id="loader-ingreso"></span>
+        </button>
+      </form>
     </div>
-    
+
+    <script src="/Assets/JavaScript/nuevoUsuario.js"></script>
 
 
-    <script src="./Assets/JavaScript/nuevoUsuario.js"></script>
-
-
-</body>
+  </body>
 </html>

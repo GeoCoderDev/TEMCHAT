@@ -298,9 +298,7 @@ class AnimacionAparicionYDesaparicion {
 
     estilosCSSAparicion.forEach((valor, clave) => {
       estilosAparicion += `${clave}: ${valor};`;
-    });
-
-    console.log(estilosAparicion);
+    });    
 
     this.estilosCssAdicionales = insertarReglasCSSAdicionales(`
           

@@ -12,7 +12,6 @@ const path = require('path')
 const app = express();
 
 // CADENA DE MIDDLEWARES
-app.use(express.static(__dirname + "/public"));
 app.use(body_parser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(methodOverride());
@@ -21,7 +20,7 @@ app.use(body_parser.json());
 // app.use(morgan('dev'))
 
 
-app.set('view engine', 'ejs'); // Configurando la extensión de vista como ".html"
+app.set('view engine', 'ejs'); // Configurando la extensión de vista como ".ejs"
 app.set('views', path.join(__dirname, 'public', 'views')); // Ruta a las vistas
 
 //Conectando a la Base de datos
@@ -29,10 +28,16 @@ db('mongodb://127.0.0.1:27017/TEMCHAT');
 
 //Haciendo uso del router en el servidor como middleware
 routerApp(app);
+  
+
+//Sirviendo Estaticos
+app.use(express.static(__dirname + "/public"));
+
 
 app.get('*', (req, res) => {    
     res.sendFile(__dirname + "/public/index.html")    
 });
+
 
 const server = http.createServer(app);
 
