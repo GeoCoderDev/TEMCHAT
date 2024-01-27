@@ -22,10 +22,7 @@ window.addEventListener("load", () => {
     // Inicia un nuevo temporizador de 500 milisegundos
     timer = setTimeout(() => {
       fetch(
-        `/users?search=${USER_FOUND_INPUT.value}&idExcept=${MI_USER_DATA._id}`,
-        {
-          method: "GET",
-        }
+        `/users?search=${USER_FOUND_INPUT.value}&idExcept=${MI_USER_DATA._id}`
       )
         .then((data) => data.json())
         .then((usuarios) => {
@@ -54,13 +51,14 @@ window.addEventListener("load", () => {
 
   //Añadiendo Eventos
   const iconosAcceso = document.querySelectorAll(".icono-acceso");
-  const Contenedor_Chat_Opcional = document.getElementById("cont-chat-opcional");
+  const Contenedor_Chat_Opcional =
+    document.getElementById("cont-chat-opcional");
 
   iconosAcceso.forEach((icono, index) => {
     icono.addEventListener("click", (e) => {
       if (e.target.classList.contains("icono-selected")) return;
-      
-      Contenedor_Chat_Opcional.style.left = `-${100*index}%`;
+
+      Contenedor_Chat_Opcional.style.left = `-${100 * index}%`;
 
       iconosAcceso.forEach((ic) => {
         if (ic === e.target || ic === e.target.parentNode)

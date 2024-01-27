@@ -108,17 +108,11 @@ delegarEvento("click", "#random-temchat-button", (e) => {
 
     MessageInMessagePanel.currentMessage.forceFinish(4);
     return MessageInMessagePanel.currentMessage.finish.then(() => {
-      socket.emit(
-        "GET-ALEATORY-USER",
-        JSON.stringify(ChatRequest.requestIDs)
-      );
+      socket.emit("GET-ALEATORY-USER", JSON.stringify(ChatRequest.requestIDs));
     });
   }
 
-  socket.emit(
-    "GET-ALEATORY-USER",
-    JSON.stringify(ChatRequest.requestIDs)
-  );
+  socket.emit("GET-ALEATORY-USER", JSON.stringify(ChatRequest.requestIDs));
 });
 
 /**
@@ -171,12 +165,6 @@ delegarEvento("click", "#random-temchat-persistente-button", (e) => {
   if (MessageInMessagePanel.currentMessage?.currentOperationUserInformationID)
     return MessageInMessagePanel.resaltar(0.7);
 
-  if (
-    MessageInMessagePanel.currentMessage &&
-    MessageInMessagePanel.currentMessage.type === "UsNF"
-  )
-    MessageInMessagePanel.currentMessage.forceFinish(4);
-
   MANAGER.PERSISTENCIA_CHAT_RANDOM_ACTIVADO = true;
 
   e.target.innerText = "DESACTIVAR CHAT ALEATORIO PERSISTENTE";
@@ -189,10 +177,7 @@ delegarEvento("click", "#random-temchat-persistente-button", (e) => {
     if (eventIdActual)
       MANAGER.NuevoChatRequest.removeEventListener(eventIdActual);
 
-    socket.emit(
-      "GET-ALEATORY-USER",
-      JSON.stringify(ChatRequest.requestIDs)
-    );
+    socket.emit("GET-ALEATORY-USER", JSON.stringify(ChatRequest.requestIDs));
 
     eventIdActual = MANAGER.NuevoChatRequest.addEventListener(
       (messageInPanel) => {
@@ -201,9 +186,18 @@ delegarEvento("click", "#random-temchat-persistente-button", (e) => {
         });
       }
     );
-  };
+  }
 
-  solicitudesRandomRecursivas();
+  if (
+    MessageInMessagePanel.currentMessage &&
+    MessageInMessagePanel.currentMessage.type === "UsNF"
+  ) {
+    MessageInMessagePanel.currentMessage.forceFinish(4).then(() => {
+      return solicitudesRandomRecursivas();
+    });
+  } else {
+    solicitudesRandomRecursivas();
+  }
 });
 
 socket.on("TAKE-YOUR-ALEATORY-USER", (aleatoryUser) => {

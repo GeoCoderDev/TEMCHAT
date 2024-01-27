@@ -128,13 +128,23 @@ export class MessageInMessagePanel {
       this.animacion.iniciar();
 
       this.animacion.finished.then(() => {
-        resolveFinish();
-        UserFound.userFoundRequestedCurrent?.estadoInicial();
-        MessageInMessagePanel.currentMessage = undefined;
-        document
-          .querySelector(`#${MESSAGE_PANEL.id} .mesagge-in-panel`)
-          .remove();
-        mensajeHTML.innerHTML = "";
+        const finalizarDefinitivamente = () => {
+          resolveFinish();
+          UserFound.userFoundRequestedCurrent?.estadoInicial();
+          MessageInMessagePanel.currentMessage = undefined;
+          document
+            .querySelector(`#${MESSAGE_PANEL.id} .mesagge-in-panel`)
+            .remove();
+          mensajeHTML.innerHTML = "";
+        };
+
+        if (state === 0) {
+          return this.desplegarPostMensaje(`${this.currentOperationUserInformationUsername} rechazo tu solicitud`).then(() =>
+            finalizarDefinitivamente()
+          );
+        }
+
+        finalizarDefinitivamente();
       });
 
       // if (!currentOperationUserInformation || state) return;
@@ -145,6 +155,8 @@ export class MessageInMessagePanel {
         );
 
       if (state != 3 && this.cronometro) this.cronometro.forceFinish();
+        
+      return this.finish;
     };
 
     // Este metodo se usara para cuando se necesite cancelar
@@ -216,7 +228,10 @@ export class MessageInMessagePanel {
       });
   }
 
-  
+  desplegarPostMensaje(mensaje="", duration=0.7){
+    if(!this.currentOperationUserInformationID) return;
+    return new MessageInMessagePanel(mensaje,duration,false).finish;
+  }
 
   /**
    *
@@ -225,5 +240,4 @@ export class MessageInMessagePanel {
   static resaltar(duration) {
     return resaltWithBorder(MESSAGE_PANEL, duration);
   }
-
 }
