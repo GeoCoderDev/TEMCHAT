@@ -1,7 +1,8 @@
 const socketIo = require("socket.io");
-const {Types:{ ObjectId }} = require('mongoose');
+const {
+  Types: { ObjectId },
+} = require("mongoose");
 const temporaryUsersController = require("../components/temporaryUsers/controller");
-
 
 /**
  *
@@ -11,7 +12,6 @@ function socketManager(server) {
   const io = socketIo(server);
 
   io.on("connection", (socket) => {
-    
     let username_temchat_actual = undefined;
 
     socket.on("MY-USERNAME", (username) => {
@@ -35,10 +35,13 @@ function socketManager(server) {
           console.log(`${MI_USER_DATA.username} conectado`);
 
           socket.on("GET-ALEATORY-USER", (pendingRequestsIDs) => {
+            let Pending_Requests_IDs = pendingRequestsIDs
+              ? JSON.parse(pendingRequestsIDs)
+              : [];
 
-            let Pending_Requests_IDs = pendingRequestsIDs?JSON.parse(pendingRequestsIDs): [];
-            
-            Pending_Requests_IDs = Pending_Requests_IDs.map(request_id=>new ObjectId(request_id));
+            Pending_Requests_IDs = Pending_Requests_IDs.map(
+              (request_id) => new ObjectId(request_id)
+            );
 
             temporaryUsersController
               .getAleatoryUser([MI_USER_DATA._id, ...Pending_Requests_IDs])
@@ -54,100 +57,103 @@ function socketManager(server) {
           });
 
           socket.on("(SERVER)TEMCHAT-ACCEPTED-FOR-YOU", (username) => {
+            temporaryUsersController
+              .getUserByUsername(username)
+              .then((user) => {
+                if (!user) return;
 
-            temporaryUsersController.getUserByUsername(username).then((user)=>{
-
-              if(!user) return;
-  
-              socket
-                .to(user.socketConectionID)
-                .emit(
-                  "TEMCHAT-REQUEST-ACCEPTED-FOR-YOU",
-                  JSON.stringify(user),
-                  JSON.stringify(MI_USER_DATA)
-                );
-            })
-
-
+                socket
+                  .to(user.socketConectionID)
+                  .emit(
+                    "TEMCHAT-REQUEST-ACCEPTED-FOR-YOU",
+                    JSON.stringify(user),
+                    JSON.stringify(MI_USER_DATA)
+                  );
+              });
           });
 
-          socket.on("(SERVER)MESSAGE-FOR-YOU", (usernameDestinataryUser, content) => {
-            console.log(username_temchat_actual)
-            temporaryUsersController.getUserByUsername(usernameDestinataryUser).then((user)=>{
+          socket.on(
+            "(SERVER)MESSAGE-FOR-YOU",
+            (usernameDestinataryUser, content) => {
+              temporaryUsersController
+                .getUserByUsername(usernameDestinataryUser)
+                .then((user) => {
+                  if (!user) return;
 
-              if(!user) return;
+                  socket
+                    .to(user.socketConectionID)
+                    .emit("MESSAGE-FOR-YOU", content);
+                });
+            }
+          );
 
-              socket
-                .to(user.socketConectionID)
-                .emit("MESSAGE-FOR-YOU", content);
-
-            })
-
-          });
-
-          socket.on("(SERVER)REQUEST-FOR-X-USER", (usernameOfUser, type, waitTime) => {
-            console.log(usernameOfUser)
-            temporaryUsersController.getUserByUsername(usernameOfUser).then((userFound)=>{
-
-              socket
-                .to(userFound.socketConectionID)
-                .emit(
-                  "TEMCHAT-REQUEST-FOR-YOU",
-                  JSON.stringify(MI_USER_DATA),
-                  type,waitTime
-                );
-
-            })
-          
-          });
+          socket.on(
+            "(SERVER)REQUEST-FOR-X-USER",
+            (usernameOfUser, type, waitTime) => {
+              temporaryUsersController
+                .getUserByUsername(usernameOfUser)
+                .then((userFound) => {
+                  socket
+                    .to(userFound.socketConectionID)
+                    .emit(
+                      "TEMCHAT-REQUEST-FOR-YOU",
+                      JSON.stringify(MI_USER_DATA),
+                      type,
+                      waitTime
+                    );
+                });
+            }
+          );
 
           socket.on("(SERVER)CANCEL-REQUEST-FOR-X-USER", (username) => {
-            
-            temporaryUsersController.getUserByUsername(username).then((user)=>{
+            temporaryUsersController
+              .getUserByUsername(username)
+              .then((user) => {
+                if (!user) return console.log("Usuario no encontrado");
 
-              if(!user) return console.log("Usuario no encontrado");
-              
-              socket
-                .to(user.socketConectionID)
-                .emit("CANCEL-REQUEST-FROM-X-USER", JSON.stringify(MI_USER_DATA));
-            })
-
+                socket
+                  .to(user.socketConectionID)
+                  .emit(
+                    "CANCEL-REQUEST-FROM-X-USER",
+                    JSON.stringify(MI_USER_DATA)
+                  );
+              });
           });
 
           socket.on("(SERVER)TEMCHAT-REJECTED-FOR-YOU", (username) => {
-            
-            temporaryUsersController.getUserByUsername(username).then((user)=>{
-              
-              if(!user) return;
+            temporaryUsersController
+              .getUserByUsername(username)
+              .then((user) => {
+                if (!user) return;
 
-              socket
-                .to(user.socketConectionID)
-                .emit("TEMCHAT-REJECTED-FOR-YOU", JSON.stringify(MI_USER_DATA));
-            })
-
+                socket
+                  .to(user.socketConectionID)
+                  .emit(
+                    "TEMCHAT-REJECTED-FOR-YOU",
+                    JSON.stringify(MI_USER_DATA)
+                  );
+              });
           });
 
           socket.on("(SERVER)TEMCHAT-FINISHED-FOR-YOU", (username) => {
+            temporaryUsersController
+              .getUserByUsername(username)
+              .then((user) => {
+                if (!user) return;
 
-            temporaryUsersController.getUserByUsername(username).then((user)=>{ 
-
-              if(!user) return;
-  
-              socket
-                .to(user.socketConectionID)
-                .emit("TEMCHAT-FINISHED-FOR-YOU");
-            })
-
+                socket
+                  .to(user.socketConectionID)
+                  .emit("TEMCHAT-FINISHED-FOR-YOU");
+              });
           });
 
-          socket.on("SET-TEMCHAT-USERNAME-ACTUAL",(usernameTemchatActual)=>{
+          socket.on("SET-TEMCHAT-USERNAME-ACTUAL", (usernameTemchatActual) => {
             username_temchat_actual = usernameTemchatActual;
-          })
+          });
 
-
-          socket.on("REMOVE-TEMCHAT-USERNAME-ACTUAL",()=>{
+          socket.on("REMOVE-TEMCHAT-USERNAME-ACTUAL", () => {
             username_temchat_actual = undefined;
-          })
+          });
 
           socket.on("CHANGE-STATE", (state) => {
             temporaryUsersController.changeState(MI_USER_DATA._id, state);
@@ -155,9 +161,21 @@ function socketManager(server) {
 
           socket.on("DELETE-USER-FROM-DATABASE", () => {
             temporaryUsersController.deleteTemporaryUser(MI_USER_DATA._id);
+
+            if (!username_temchat_actual) return;
+
+            temporaryUsersController
+              .getUserByUsername(username_temchat_actual)
+              .then((user) => {
+                if (!user) return;
+
+                socket
+                .to(user.socketConectionID)
+                .emit("TEMCHAT-FINISHED-FOR-YOU");
+
+              });
+
           });
-
-
         })
         .catch((err) => {
           console.error(err);
@@ -168,7 +186,6 @@ function socketManager(server) {
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });
-
   });
 }
 

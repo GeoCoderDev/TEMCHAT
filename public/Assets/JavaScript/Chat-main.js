@@ -1,3 +1,4 @@
+
 // OBTENIENDO NUESTRO SOCKET
 export const socket = io.connect();
 
@@ -34,10 +35,6 @@ document.addEventListener("visibilitychange", () => {
       socket.emit("MY-USERNAME", myUsername);
     }
   }
-});
-
-window.addEventListener("beforeunload", () => {
-  socket.emit("DELETE-USER-FROM-DATABASE");
 });
 
 let altoPantallaVisible;

@@ -1,6 +1,7 @@
 import { UserFound, CONT_USERS_FOUND } from "./UserFound(Class).js";
 import { socket } from "./Chat-main.js";
 import { MessageInMessagePanel } from "./MessageInMessagePanel(class).js";
+import { ChatRequest } from "./ChatRequest(class).js";
 
 window.addEventListener("load", () => {
   const USER_FOUND_INPUT = document.getElementById("usuario-buscado");
@@ -67,4 +68,11 @@ window.addEventListener("load", () => {
       });
     });
   });
+});
+
+
+window.addEventListener("beforeunload", () => {
+  ChatRequest.rejectAllRequest();
+  MessageInMessagePanel.currentMessage?.forceFinish?.(2)  
+  socket.emit("DELETE-USER-FROM-DATABASE");
 });
