@@ -11,7 +11,8 @@ function socketManager(server) {
   const io = socketIo(server);
 
   io.on("connection", (socket) => {
-    console.log("User connected:", socket.id);
+    
+    let username_temchat_actual = undefined;
 
     socket.on("MY-USERNAME", (username) => {
       let MI_USER_DATA;
@@ -52,45 +53,40 @@ function socketManager(server) {
               });
           });
 
-          socket.on("TEMCHAT-REQUEST-FOR-ALEATORY-USER", () => {
-            temporaryUsersController
-              .getAleatoryUser(MI_USER_DATA._id)
-              .then((usuarioAleatorio) => {
-                const Usuario_Aleatorio = usuarioAleatorio[0];
-                socket
-                  .to(Usuario_Aleatorio.socketConectionID)
-                  .emit(
-                    "TEMCHAT-REQUEST-FOR-YOU",
-                    JSON.stringify(MI_USER_DATA),
-                    "Random-Temchat"
-                  );
-              })
-              .catch((e) => {
-                console.error(e);
-              });
+          socket.on("(SERVER)TEMCHAT-ACCEPTED-FOR-YOU", (username) => {
+
+            temporaryUsersController.getUserByUsername(username).then((user)=>{
+
+              if(!user) return;
+  
+              socket
+                .to(user.socketConectionID)
+                .emit(
+                  "TEMCHAT-REQUEST-ACCEPTED-FOR-YOU",
+                  JSON.stringify(user),
+                  JSON.stringify(MI_USER_DATA)
+                );
+            })
+
+
           });
 
-          socket.on("(SERVER)TEMCHAT-ACCEPTED-FOR-YOU", (dataUserRequester) => {
-            const DATA_USER_REQUESTER = JSON.parse(dataUserRequester);
-            socket
-              .to(DATA_USER_REQUESTER.socketConectionID)
-              .emit(
-                "TEMCHAT-REQUEST-ACCEPTED-FOR-YOU",
-                dataUserRequester,
-                JSON.stringify(MI_USER_DATA)
-              );
-          });
+          socket.on("(SERVER)MESSAGE-FOR-YOU", (usernameDestinataryUser, content) => {
+            console.log(username_temchat_actual)
+            temporaryUsersController.getUserByUsername(usernameDestinataryUser).then((user)=>{
 
-          socket.on("(SERVER)MESSAGE-FOR-YOU", (destinataryUser, content) => {
-            const DESTINATARY_DATA = JSON.parse(destinataryUser);
+              if(!user) return;
 
-            socket
-              .to(DESTINATARY_DATA.socketConectionID)
-              .emit("MESSAGE-FOR-YOU", content);
+              socket
+                .to(user.socketConectionID)
+                .emit("MESSAGE-FOR-YOU", content);
+
+            })
+
           });
 
           socket.on("(SERVER)REQUEST-FOR-X-USER", (usernameOfUser, type, waitTime) => {
-            
+            console.log(usernameOfUser)
             temporaryUsersController.getUserByUsername(usernameOfUser).then((userFound)=>{
 
               socket
@@ -100,12 +96,13 @@ function socketManager(server) {
                   JSON.stringify(MI_USER_DATA),
                   type,waitTime
                 );
+
             })
           
           });
 
           socket.on("(SERVER)CANCEL-REQUEST-FOR-X-USER", (username) => {
-
+            
             temporaryUsersController.getUserByUsername(username).then((user)=>{
 
               if(!user) return console.log("Usuario no encontrado");
@@ -130,12 +127,27 @@ function socketManager(server) {
 
           });
 
-          socket.on("(SERVER)TEMCHAT-FINISHED-FOR-YOU", (destinataryUser) => {
-            const DESTINATARY_DATA = JSON.parse(destinataryUser);
-            socket
-              .to(DESTINATARY_DATA.socketConectionID)
-              .emit("TEMCHAT-FINISHED-FOR-YOU");
+          socket.on("(SERVER)TEMCHAT-FINISHED-FOR-YOU", (username) => {
+
+            temporaryUsersController.getUserByUsername(username).then((user)=>{ 
+
+              if(!user) return;
+  
+              socket
+                .to(user.socketConectionID)
+                .emit("TEMCHAT-FINISHED-FOR-YOU");
+            })
+
           });
+
+          socket.on("SET-TEMCHAT-USERNAME-ACTUAL",(usernameTemchatActual)=>{
+            username_temchat_actual = usernameTemchatActual;
+          })
+
+
+          socket.on("REMOVE-TEMCHAT-USERNAME-ACTUAL",()=>{
+            username_temchat_actual = undefined;
+          })
 
           socket.on("CHANGE-STATE", (state) => {
             temporaryUsersController.changeState(MI_USER_DATA._id, state);

@@ -33,9 +33,6 @@ socket.on(
   "TEMCHAT-REQUEST-FOR-YOU",
   (requesterUserData, type, waitTimeRequest) => {
     const REQUESTER_DATA = JSON.parse(requesterUserData);
-    console.log(ChatRequest.allRequests.has(REQUESTER_DATA._id));
-    if (ChatRequest.allRequests.has(REQUESTER_DATA._id))
-      return socket.emit("(SERVER)REQUEST-ALREADY-RECEIVED");
 
     const MI_USER_DATA = JSON.parse(sessionStorage.getItem("USER-DATA"));
 
@@ -57,9 +54,9 @@ socket.on(
         MANAGER.ESTADO_ACTUAL = 0;
         socket.emit(
           "(SERVER)TEMCHAT-ACCEPTED-FOR-YOU",
-          JSON.stringify(REQUESTER_DATA)
+          REQUESTER_DATA.username
         );
-        const TEMCHAT_ACTUAL = new Temchat(
+        MANAGER.TEMCHAT_ACTUAL = new Temchat(
           MI_USER_DATA,
           REQUESTER_DATA,
           socket
@@ -67,9 +64,13 @@ socket.on(
 
         // LA UNICA FORMA QUE TEMCHAT FINALICE POR finished, ES PORQUE
         // YO MISMO LOS DECIDI
-        TEMCHAT_ACTUAL.finishedByMe.then(() => {
-          socket.emit("(SERVER)TEMCHAT-FINISHED-FOR-YOU", requesterUserData);
+        MANAGER.TEMCHAT_ACTUAL.finishedByMe.then(() => {
+          socket.emit(
+            "(SERVER)TEMCHAT-FINISHED-FOR-YOU",
+            REQUESTER_DATA.username
+          );
           MANAGER.ESTADO_ACTUAL = 1;
+          MANAGER.TEMCHAT_ACTUAL = undefined;
         });
       })
       .catch(() => {
@@ -103,16 +104,37 @@ delegarEvento("click", "#random-temchat-button", (e) => {
   if (MessageInMessagePanel.currentMessage?.currentOperationUserInformationID)
     return MessageInMessagePanel.resaltar(0.7);
 
+  const iniciarSolicitudRandom = () => {
+    e.target.setAttribute("disabled", true);
+
+    socket.emit("GET-ALEATORY-USER", JSON.stringify(ChatRequest.requestIDs));
+
+    let requestEventID;
+
+    requestEventID = MANAGER.NuevoChatRequest.addEventListener(
+      (messageInPanel) => {
+        messageInPanel.finish.then(() => {
+          MANAGER.NuevoChatRequest.removeEventListener(requestEventID);
+          e.target.removeAttribute("disabled");
+        });
+      }
+    );
+  };
+
   if (MessageInMessagePanel.currentMessage) {
     if (MessageInMessagePanel.currentMessage.type === "UsNF") return;
 
     MessageInMessagePanel.currentMessage.forceFinish(4);
+
+    e.target.setAttribute("disabled", true);
+
     return MessageInMessagePanel.currentMessage.finish.then(() => {
       socket.emit("GET-ALEATORY-USER", JSON.stringify(ChatRequest.requestIDs));
+      iniciarSolicitudRandom();
     });
   }
 
-  socket.emit("GET-ALEATORY-USER", JSON.stringify(ChatRequest.requestIDs));
+  iniciarSolicitudRandom();
 });
 
 /**
@@ -167,11 +189,6 @@ delegarEvento("click", "#random-temchat-persistente-button", (e) => {
 
   MANAGER.PERSISTENCIA_CHAT_RANDOM_ACTIVADO = true;
 
-  e.target.innerText = "DESACTIVAR CHAT ALEATORIO PERSISTENTE";
-
-  activacionDeBotones = desactivarLosOtrosBotones(e.target);
-  RANDOM_TEMCHAT_TIME_INPUT.setAttribute("disabled", true);
-
   const solicitudesRandomRecursivas = () => {
     if (!MANAGER.PERSISTENCIA_CHAT_RANDOM_ACTIVADO) return;
     if (eventIdActual)
@@ -181,21 +198,29 @@ delegarEvento("click", "#random-temchat-persistente-button", (e) => {
 
     eventIdActual = MANAGER.NuevoChatRequest.addEventListener(
       (messageInPanel) => {
-        messageInPanel.finish.then(() => {
-          solicitudesRandomRecursivas();
-        });
+        messageInPanel.finish.then(() => solicitudesRandomRecursivas());
       }
     );
-  }
+  };
 
   if (
     MessageInMessagePanel.currentMessage &&
     MessageInMessagePanel.currentMessage.type === "UsNF"
   ) {
     MessageInMessagePanel.currentMessage.forceFinish(4).then(() => {
-      return solicitudesRandomRecursivas();
+      e.target.innerText = "DESACTIVAR CHAT ALEATORIO PERSISTENTE";
+
+      activacionDeBotones = desactivarLosOtrosBotones(e.target);
+      RANDOM_TEMCHAT_TIME_INPUT.setAttribute("disabled", true);
+
+      solicitudesRandomRecursivas();
     });
   } else {
+    e.target.innerText = "DESACTIVAR CHAT ALEATORIO PERSISTENTE";
+
+    activacionDeBotones = desactivarLosOtrosBotones(e.target);
+    RANDOM_TEMCHAT_TIME_INPUT.setAttribute("disabled", true);
+
     solicitudesRandomRecursivas();
   }
 });
@@ -259,8 +284,9 @@ socket.on("TEMCHAT-REQUEST-ACCEPTED-FOR-YOU", (miUserData, otherUserData) => {
 
   // LA UNICA FORMA QUE TEMCHAT FINALICE POR finished, ES PORQUE
   // YO MISMO LOS DECIDI
-  MANAGER.TEMCHAT_ACTUAL.finishedForMe.then(() => {
-    socket.emit("(SERVER)TEMCHAT-FINISHED-FOR-YOU", otherUserData);
+  MANAGER.TEMCHAT_ACTUAL.finishedByMe.then(() => {
+    socket.emit("(SERVER)TEMCHAT-FINISHED-FOR-YOU", OTHER_DATA_USER.username);
+    MANAGER.TEMCHAT_ACTUAL = undefined;
     MANAGER.ESTADO_ACTUAL = 1;
   });
 });

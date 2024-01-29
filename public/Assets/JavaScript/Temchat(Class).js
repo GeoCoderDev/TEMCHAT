@@ -1,7 +1,6 @@
 import { CountdownTimer } from "./CountdownTimer(class).js";
 import { abrirPuertas, cerrarPuertas } from "./Chat-main.js";
 
-
 const CONTENEDOR_DE_CHAT_EN_VIVO = document.getElementById("cont-live-chat");
 const COUNT_DOWN_TIMER = document.getElementById("Count-Down-Timer");
 const DELAY_FOR_COUNTDOWNTIMER = 0.5;
@@ -109,10 +108,15 @@ export class Temchat {
       );
     });
 
+
+    this.miSocket.emit("SET-TEMCHAT-USERNAME-ACTUAL", otherUserData.username)
+
     // EVENTO DE SOCKET PARA RECIBIR MENSAJE
     this.miSocket.on("MESSAGE-FOR-YOU", (contenido) => {
       this.plasmarMensajeRecibido(contenido);
     });
+    
+
   }
 
   #configurarTextArea() {
@@ -203,6 +207,8 @@ export class Temchat {
 
 
     }
+
+    this.miSocket.emit("REMOVE-TEMCHAT-USERNAME-ACTUAL");
   }
 
   #elOtroUsuarioFinalizoElTemchatMESSAGE() {
@@ -218,7 +224,7 @@ export class Temchat {
 
     this.miSocket.emit(
       "(SERVER)MESSAGE-FOR-YOU",
-      JSON.stringify(this.otherUserData),
+      this.otherUserData.username,
       contenido_mensaje
     );
 
