@@ -16,7 +16,7 @@ app.use(body_parser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(methodOverride());
 app.use(methodOverride('X-HTTP-Method-Override')); 
-app.use(body_parser.json());
+app.use(express.json());
 // app.use(morgan('dev'))
 
 

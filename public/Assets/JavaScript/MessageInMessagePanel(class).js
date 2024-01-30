@@ -124,38 +124,44 @@ export class MessageInMessagePanel {
 
       this.seFinalizoElMensaje = true;
 
-      // Reanudando para desaparecer
-      this.animacion.iniciar();
+      const finalizarDefinitivamente = () => {
+        resolveFinish();
+        UserFound.userFoundRequestedCurrent?.estadoInicial();
+        MessageInMessagePanel.currentMessage = undefined;
+        document
+          .querySelector(`#${MESSAGE_PANEL.id} .mesagge-in-panel`)
+          .remove();
+        mensajeHTML.innerHTML = "";
+      };
 
-      this.animacion.finished.then(() => {
-        const finalizarDefinitivamente = () => {
-          resolveFinish();
-          UserFound.userFoundRequestedCurrent?.estadoInicial();
-          MessageInMessagePanel.currentMessage = undefined;
-          document
-            .querySelector(`#${MESSAGE_PANEL.id} .mesagge-in-panel`)
-            .remove();
-          mensajeHTML.innerHTML = "";
-        };
-
-        if (state === 0) {
-          return this.desplegarPostMensaje(`${this.currentOperationUserInformationUsername} rechazo tu solicitud`).then(() =>
-            finalizarDefinitivamente()
-          );
-        }
-
-        finalizarDefinitivamente();
-      });
-
-      // if (!currentOperationUserInformation || state) return;
       if (state == 2)
         socket.emit(
           "(SERVER)CANCEL-REQUEST-FOR-X-USER",
           this.currentOperationUserInformationUsername
         );
 
-      if (state != 3 && this.cronometro) this.cronometro.forceFinish();
-        
+      if (state != 3 && this.cronometro) {
+        if (this.cronometro.forceFinish) {
+          this.cronometro.forceFinish();
+        } else {
+           finalizarDefinitivamente();
+           return this.finish;
+        }
+      }
+
+      // Reanudando para desaparecer
+      this.animacion.iniciar();
+
+      this.animacion.finished.then(() => {
+        if (state === 0) {
+          return this.desplegarPostMensaje(
+            `${this.currentOperationUserInformationUsername} rechazo tu solicitud`
+          ).then(() => finalizarDefinitivamente());
+        }
+
+        finalizarDefinitivamente();
+      });
+
       return this.finish;
     };
 
@@ -165,7 +171,7 @@ export class MessageInMessagePanel {
 
     MESSAGE_PANEL.appendChild(mensajeHTML);
 
-    this.animacion = new AnimacionAparicionYDesaparicion(mensajeHTML, 0.35, [
+    this.animacion = new AnimacionAparicionYDesaparicion(mensajeHTML, 0.3, [
       "mesagge-in-panel",
     ]);
 
@@ -228,9 +234,15 @@ export class MessageInMessagePanel {
       });
   }
 
-  desplegarPostMensaje(mensaje="", duration=0.7){
-    if(!this.currentOperationUserInformationID) return;
-    return new MessageInMessagePanel(mensaje,duration,false).finish;
+  desplegarPostMensaje(mensaje = "", duration = 1) {
+    if (!this.currentOperationUserInformationID) return;
+    const postMessageInPanel = new MessageInMessagePanel(
+      mensaje,
+      duration,
+      false
+    );
+
+    return postMessageInPanel.finish;
   }
 
   /**

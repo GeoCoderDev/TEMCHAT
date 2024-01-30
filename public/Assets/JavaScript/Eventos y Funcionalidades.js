@@ -75,4 +75,5 @@ window.addEventListener("beforeunload", () => {
   ChatRequest.rejectAllRequest();
   MessageInMessagePanel.currentMessage?.forceFinish?.(2)  
   socket.emit("DELETE-USER-FROM-DATABASE");
-});
+}, true);
+

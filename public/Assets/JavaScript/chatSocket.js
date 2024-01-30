@@ -94,9 +94,10 @@ socket.on("TEMCHAT-REJECTED-FOR-YOU", (userInfo) => {
 });
 
 socket.on("CANCEL-REQUEST-FROM-X-USER", (userInfo) => {
+
   const USER_DATA_INFO = JSON.parse(userInfo);
   ChatRequest.allRequests.get(USER_DATA_INFO._id)?.eliminarPorCancelacion();
-  // document.getElementById()
+
 });
 
 // SOCKET PARA ENVIAR UNA SOLICITUD A USUARIO ALEATORIO
@@ -115,6 +116,13 @@ delegarEvento("click", "#random-temchat-button", (e) => {
       (messageInPanel) => {
         messageInPanel.finish.then(() => {
           MANAGER.NuevoChatRequest.removeEventListener(requestEventID);
+          if (
+            MANAGER.PERSISTENCIA_CHAT_RANDOM_ACTIVADO &&
+            e.target.hasAttribute("disabled")
+          )
+            return;
+
+
           e.target.removeAttribute("disabled");
         });
       }
@@ -150,9 +158,9 @@ const desactivarLosOtrosBotones = (botonExcepcion) => {
   );
 
   return () =>
-    elementos.forEach((el) =>
-      el !== botonExcepcion ? el.removeAttribute("disabled") : undefined
-    );
+    elementos.forEach((el) => {
+      el !== botonExcepcion ? el.removeAttribute("disabled") : undefined;
+    });
 };
 
 let activacionDeBotones;
@@ -198,15 +206,15 @@ delegarEvento("click", "#random-temchat-persistente-button", (e) => {
 
     eventIdActual = MANAGER.NuevoChatRequest.addEventListener(
       (messageInPanel) => {
+        if (!MANAGER.PERSISTENCIA_CHAT_RANDOM_ACTIVADO) {
+          return messageInPanel.forceFinish(2);
+        }
         messageInPanel.finish.then(() => solicitudesRandomRecursivas());
       }
     );
   };
 
-  if (
-    MessageInMessagePanel.currentMessage &&
-    MessageInMessagePanel.currentMessage.type === "UsNF"
-  ) {
+  if (MessageInMessagePanel.currentMessage) {
     MessageInMessagePanel.currentMessage.forceFinish(4).then(() => {
       e.target.innerText = "DESACTIVAR CHAT ALEATORIO PERSISTENTE";
 

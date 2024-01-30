@@ -20,6 +20,9 @@ export class ChatRequest {
     const componenteHTML = document.createElement("div");
     this.requesterUserID = userData._id;
     componenteHTML.classList.add("request");
+
+    ChatRequest.allRequests.set(userData._id, this);
+
     // Para evitar conflictos de referencia por usar el mismo ID en
     // Diferentes elementos HTML
 
@@ -99,8 +102,6 @@ export class ChatRequest {
       );
     });
 
-    ChatRequest.allRequests.set(userData._id, this);
-
     this.#desplegarElemento();
 
     if (ChatRequest.allRequests.size > 0) {
@@ -136,7 +137,7 @@ export class ChatRequest {
     this.animacion.iniciar();
   }
 
-  desvanecerElemento() {
+  #eliminarConfiguraciones() {
     eliminarEventoDelegado("click", this.buttonAcceptEventID);
     eliminarEventoDelegado("click", this.buttonRejectEventID);
 
@@ -144,37 +145,41 @@ export class ChatRequest {
 
     if (ChatRequest.allRequests.size == 0)
       CANTIDAD_SOLICITUDES_HTML.style.display = "none";
+  }
 
+  desvanecerElemento() {
+    this.#eliminarConfiguraciones();
     // INICIAR PARA DESAPARECER
-    this.animacion.iniciar();
+    if(!this.animacion.iniciar()){
+      return this.#removerObligatoriamente()
+    }
 
     return this.animacion.finished;
+  }
+
+  #removerObligatoriamente(){
+    this.componenteHTML.remove();
+    this.#eliminarConfiguraciones();
   }
 
   eliminarPorCancelacion() {
     //Cancelamos el cronometro sin que rechaze la solicitud, puesto que el otro usuario
     //cancelo su solicitud no tu
-    if (this.cuentaRegresiva)
-      this.cuentaRegresiva.forceFinish({ sinRechazar: true });
+
+    if (this.cuentaRegresiva) {
+      if (this.cuentaRegresiva.forceFinish) {
+        console.log("Hay forceFinish");
+        this.cuentaRegresiva.forceFinish({ sinRechazar: true });
+      } else {
+        console.log("No hay forceFinish");
+        return this.#removerObligatoriamente()
+      }
+    }
+
     return this.desvanecerElemento();
   }
 
   #mensajeDeCancelacionPorParteDelOtroUsuario() {}
-
-  // #setRequest(){
-  //     if(!ChatRequest.allRequests) ChatRequest.allRequests = [];
-  //     ChatRequest.allRequests.push(this)
-  //     ChatRequest.
-  // }
-
-  // ChatRequest.allRequests tiene que ser un Map
-  // static rejectAllRequests(){
-  //     if(ChatRequest.allRequests){
-  //         for (request of myMap.values()) {
-  //             request.cancelRequest();
-  //           }
-  //     }
-  // }
 
   static rejectAllRequest() {
     for (let chatRequest of ChatRequest.allRequests.values()) {
@@ -188,11 +193,9 @@ export class ChatRequest {
     );
   }
 
-  static get requestIDs(){
+  static get requestIDs() {
     return Array.from(ChatRequest.allRequests.values()).map(
       (req) => req.userData._id
     );
   }
-
 }
-

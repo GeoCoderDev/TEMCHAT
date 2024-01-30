@@ -389,13 +389,24 @@ class AnimacionAparicionYDesaparicion {
     }
   }
 
+  /**
+   * 
+   * @returns {boolean} devuelve false si no se pudo iniciar la animacion o ya estaba iniciada y true si se logro iniciar con exito
+   */
   iniciar() {
     if (!this.elementoHTML.classList.contains(this.Nombre_Clase_Animacion)) {
       this.elementoHTML.classList.add(this.Nombre_Clase_Animacion);
       return false;
     }
 
+    if (
+      window.getComputedStyle(this.elementoHTML).animationPlayState ===
+      "running"
+    )
+      return false;
+
     this.elementoHTML.style.animationPlayState = "running";
+    return true;
   }
 
   pausar() {
