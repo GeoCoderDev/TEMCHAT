@@ -37,6 +37,9 @@ socket.on(
     const MI_USER_DATA = JSON.parse(sessionStorage.getItem("USER-DATA"));
 
     const waitTime = parseFloat(waitTimeRequest);
+
+    console.log(REQUESTER_DATA)
+    if (ChatRequest.allRequests.has(REQUESTER_DATA._id)) return;
     const chatRequest = new ChatRequest(REQUESTER_DATA, waitTime);
 
     socket.emit("(SERVER)REQUEST-RECEIVED", JSON.stringify(MI_USER_DATA));
@@ -94,10 +97,8 @@ socket.on("TEMCHAT-REJECTED-FOR-YOU", (userInfo) => {
 });
 
 socket.on("CANCEL-REQUEST-FROM-X-USER", (userInfo) => {
-
   const USER_DATA_INFO = JSON.parse(userInfo);
   ChatRequest.allRequests.get(USER_DATA_INFO._id)?.eliminarPorCancelacion();
-
 });
 
 // SOCKET PARA ENVIAR UNA SOLICITUD A USUARIO ALEATORIO
@@ -121,7 +122,6 @@ delegarEvento("click", "#random-temchat-button", (e) => {
             e.target.hasAttribute("disabled")
           )
             return;
-
 
           e.target.removeAttribute("disabled");
         });

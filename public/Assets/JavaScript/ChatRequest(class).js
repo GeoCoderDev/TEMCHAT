@@ -167,19 +167,15 @@ export class ChatRequest {
     //cancelo su solicitud no tu
 
     if (this.cuentaRegresiva) {
-      if (this.cuentaRegresiva.forceFinish) {
-        console.log("Hay forceFinish");
+      if (this.cuentaRegresiva.forceFinish) {        
         this.cuentaRegresiva.forceFinish({ sinRechazar: true });
-      } else {
-        console.log("No hay forceFinish");
+      } else {        
         return this.#removerObligatoriamente()
       }
     }
 
     return this.desvanecerElemento();
   }
-
-  #mensajeDeCancelacionPorParteDelOtroUsuario() {}
 
   static rejectAllRequest() {
     for (let chatRequest of ChatRequest.allRequests.values()) {
