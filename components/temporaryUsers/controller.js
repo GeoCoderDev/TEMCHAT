@@ -76,9 +76,9 @@ async function getUserByUsername(username) {
  * @param {string[]} idsExcept 
  * @returns 
  */
-async function getAleatoryUser(idsExcept) {
+async function getAleatoryUser(idsExcept, estadoAFiltrar) {
   try {
-    return await store.getAleatoryUser(idsExcept);
+    return await store.getAleatoryUser(idsExcept, estadoAFiltrar);
   } catch (error) {
     throw error;
   }

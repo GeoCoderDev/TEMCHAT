@@ -114,12 +114,12 @@ async function setState(id, state) {
  * @param {string[]} idsExcept
  * @returns
  */
-async function getAleatoryUser(idsExcept) {
+async function getAleatoryUser(idsExcept = [], estadoAFiltrar = 1) {
 
   try {
     return await temporaryUser.aggregate([
       { $match: { _id: { $nin: idsExcept } } }, // Excepciones para el _id
-      { $match: { state: { $in: [1, 2] } } }, // Filtrar por estado 1 o 2
+      { $match: { state: { $in: [estadoAFiltrar] } } }, // Filtrar por estado
       { $sample: { size: 1 } }, // Seleccionar un documento aleatorio de los resultados
     ]);
 

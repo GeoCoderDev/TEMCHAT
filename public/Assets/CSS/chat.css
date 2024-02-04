@@ -8,14 +8,14 @@
 @import url("/Assets/Fonts/Iman/style.css");
 
 * {
-  margin: 0;  
+  margin: 0;
   padding: 0;
   box-sizing: border-box;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   object-fit: cover;
-  -webkit-tap-highlight-color: transparent; 
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Desactivar el resaltado visual en algunos navegadores móviles */
@@ -39,7 +39,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;  
+  justify-content: center;
 }
 
 /* ESTILOS GENERALES */
@@ -48,10 +48,9 @@ input[type="number"] {
   outline: none;
 }
 
-div.Enviar-Solicitud-Button{
-  user-select: none;  
+div.Enviar-Solicitud-Button {
+  user-select: none;
 }
-
 
 #main-interface {
   min-width: 100%;
@@ -198,8 +197,6 @@ header {
   border-radius: 0.7vw;
 }
 
-
-
 .cont-request-confirmation {
   height: 100%;
   width: 100%;
@@ -319,13 +316,12 @@ header {
   height: 20%;
 }
 
-#chat-random-magnetic-section{
+#chat-random-magnetic-section {
   flex-direction: row;
   width: 80%;
-  
 }
 
-#cont-modo-iman{
+#cont-modo-iman {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -335,29 +331,37 @@ header {
   /* border: 1px solid #000; */
 }
 
-#cont-modo-iman h3{
+#cont-modo-iman[disabled] {
+  filter: brightness(0.8);
+}
+
+#cont-modo-iman[disabled] * {
+  cursor: initial;
+}
+
+#cont-modo-iman h3 {
   font-family: Roboto;
   font-weight: 400;
   font-size: 1vw;
   color: rgb(211, 85, 85);
 }
 
-.icono-iman{
+.icono-iman {
   position: relative;
   bottom: -0.5px;
 }
 
-.cont-checkbox-iman{
+.cont-checkbox-iman {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;  
+  justify-content: space-evenly;
   /* border: 1px solid #000; */
-  width:100%;
+  width: 100%;
   height: 50%;
   margin-bottom: 0.5vh;
 }
 
-.lbl-switch{
+.lbl-switch {
   display: flex;
   align-items: center;
   justify-content: start;
@@ -367,11 +371,11 @@ header {
   border-radius: 2vh;
   cursor: pointer;
   position: relative;
-  padding: 0 max(0.25vw,0.3vh);
+  padding: 0 max(0.25vw, 0.3vh);
   transition: 0.2s;
 }
 
-.lbl-switch .spher-checkbox{
+.lbl-switch .spher-checkbox {
   position: relative;
   width: 16px;
   border-radius: 50%;
@@ -379,12 +383,12 @@ header {
   background-color: #fff;
 }
 
-#btn-switch:checked~.lbl-switch{
+#btn-switch:checked ~ .lbl-switch {
   justify-content: end;
-  background-color:rgb(211, 85, 85);
+  background-color: rgb(211, 85, 85);
 }
 
-#btn-switch{
+#btn-switch {
   display: none;
 }
 
@@ -489,9 +493,9 @@ header {
 .Enviar-Solicitud-Button {
   background-color: rgb(68, 141, 87);
   filter: saturate(2);
-  font-size: min(0.75rem,2vh);
-  padding: min( 0.5rem, 1vh);
-  border-radius: min(0.5rem,1vh);
+  font-size: min(0.75rem, 2vh);
+  padding: min(0.5rem, 1vh);
+  border-radius: min(0.5rem, 1vh);
   cursor: pointer;
   color: white;
   font-weight: 500;
@@ -549,7 +553,7 @@ header {
   color: transparent;
 }
 
-.numeros-duracion-mensaje-en-panel{
+.numeros-duracion-mensaje-en-panel {
   font-size: max(1.8vh, 0.9rem);
   color: white;
   background-color: rgb(211, 85, 85);
@@ -852,20 +856,18 @@ header {
   word-wrap: normal;
   font-size: 1vw;
   outline: none;
-  
 }
 
-.botones-chat-random:disabled{
+.botones-chat-random:disabled {
   filter: brightness(0.8);
   cursor: inherit;
 }
 
-#random-temchat-magnetic-button{
+#random-temchat-magnetic-button {
   width: 40%;
-  
 }
 
-#contenedor-sections-chat-random input:disabled{
+#contenedor-sections-chat-random input:disabled {
   filter: brightness(0.8);
   cursor: inherit;
 }
@@ -944,7 +946,8 @@ header {
     transition: all 0.1s;
   }
 
-  .botones-chat-random, #cont-modo-iman h3 {
+  .botones-chat-random,
+  #cont-modo-iman h3 {
     font-size: 1.5vh;
   }
 
@@ -1009,7 +1012,7 @@ header {
     filter: none;
   }
 
-  #cantidad-solicitudes{
+  #cantidad-solicitudes {
     position: absolute;
     top: -2px;
     right: -2px;
@@ -1018,7 +1021,7 @@ header {
     border-radius: 50%;
     background-color: red;
     color: white;
-    font-size: 7px;    
+    font-size: 7px;
     align-items: center;
     justify-content: center;
     display: none;

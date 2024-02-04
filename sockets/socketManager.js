@@ -56,6 +56,30 @@ function socketManager(server) {
               });
           });
 
+          socket.on("GET-ALEATORY-MAGNETIC-USER", () => {
+            temporaryUsersController
+              .getAleatoryUser([MI_USER_DATA._id], 2)
+              .then((usuarioAleatorio) => {
+                socket.emit(
+                  "TAKE-YOUR-MAGNETIC-USER",
+                  JSON.stringify(usuarioAleatorio[0])
+                );
+
+                if (!usuarioAleatorio[0]) return;
+
+                socket
+                  .to(usuarioAleatorio[0].socketConectionID)
+                  .emit(
+                    "TEMCHAT-REQUEST-ACCEPTED-FOR-YOU",
+                    JSON.stringify(usuarioAleatorio[0]),
+                    JSON.stringify(MI_USER_DATA)
+                  );
+              })
+              .catch((e) => {
+                console.error(e);
+              });
+          });
+
           socket.on("(SERVER)TEMCHAT-ACCEPTED-FOR-YOU", (username) => {
             temporaryUsersController
               .getUserByUsername(username)
@@ -106,6 +130,7 @@ function socketManager(server) {
           );
 
           socket.on("(SERVER)CANCEL-REQUEST-FOR-X-USER", (username) => {
+            if (!username) return;
             temporaryUsersController
               .getUserByUsername(username)
               .then((user) => {
@@ -136,6 +161,7 @@ function socketManager(server) {
           });
 
           socket.on("(SERVER)TEMCHAT-FINISHED-FOR-YOU", (username) => {
+            console.log(username);
             temporaryUsersController
               .getUserByUsername(username)
               .then((user) => {
@@ -170,11 +196,9 @@ function socketManager(server) {
                 if (!user) return;
 
                 socket
-                .to(user.socketConectionID)
-                .emit("TEMCHAT-FINISHED-FOR-YOU");
-
+                  .to(user.socketConectionID)
+                  .emit("TEMCHAT-FINISHED-FOR-YOU");
               });
-
           });
         })
         .catch((err) => {

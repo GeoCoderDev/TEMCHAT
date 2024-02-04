@@ -13,6 +13,8 @@ export class ChatStateManager {
 
   PERSISTENCIA_CHAT_RANDOM_ACTIVADO = false;
 
+  CHAT_REQUEST_MAGNETIC = false;
+
   NuevoChatRequest = new ChatEvent();  
 
   set ESTADO_ACTUAL(state) {

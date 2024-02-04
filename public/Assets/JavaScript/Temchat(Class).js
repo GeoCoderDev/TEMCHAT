@@ -10,15 +10,15 @@ export class Temchat {
 
   /**
    *
-   * @param {Object} miUserData
-   * @param {Object} otherUserData
-   * @param {Object} miSocket
+   * @param {object} miUserData
+   * @param {object} otherUserData
+   * @param {object} miSocket
    */
   constructor(miUserData, otherUserData, miSocket) {
     this.miUserData = miUserData;
     this.otherUserData = otherUserData;
     this.miSocket = miSocket;
-
+    console.log(otherUserData);
     const componenteHTML = document.createElement("div");
     componenteHTML.classList.add("TEMCHAT");
     componenteHTML.id = `T-${this.miUserData.username}-${this.otherUserData.username}`;
@@ -102,21 +102,19 @@ export class Temchat {
         "click",
         `#${this.componenteHTML.id} .finished-temchat-button`,
         () => {
+
           resolve();
           this.finalizarChat();
         }
       );
     });
 
-
-    this.miSocket.emit("SET-TEMCHAT-USERNAME-ACTUAL", otherUserData.username)
+    this.miSocket.emit("SET-TEMCHAT-USERNAME-ACTUAL", otherUserData.username);
 
     // EVENTO DE SOCKET PARA RECIBIR MENSAJE
     this.miSocket.on("MESSAGE-FOR-YOU", (contenido) => {
       this.plasmarMensajeRecibido(contenido);
     });
-    
-
   }
 
   #configurarTextArea() {
@@ -173,17 +171,13 @@ export class Temchat {
 
       this.animation.iniciar();
 
-      this.animation.finished.then(()=>{
+      this.animation.finished.then(() => {
         setTimeout(() => {
           CONTENEDOR_DE_CHAT_EN_VIVO.removeChild(this.componenteHTML);
           abrirPuertas(1);
         }, 500);
-      })
-
-
-
+      });
     } else {
-
       this.#elOtroUsuarioFinalizoElTemchatMESSAGE();
 
       // desvanecerElementoConScale(
@@ -198,14 +192,12 @@ export class Temchat {
 
       this.animation.iniciar();
 
-      this.animation.finished.then(()=>{
+      this.animation.finished.then(() => {
         setTimeout(() => {
           CONTENEDOR_DE_CHAT_EN_VIVO.removeChild(this.componenteHTML);
           abrirPuertas(1);
         }, 500);
-      })
-
-
+      });
     }
 
     this.miSocket.emit("REMOVE-TEMCHAT-USERNAME-ACTUAL");
@@ -246,7 +238,6 @@ export class Temchat {
     this.sendButton.classList.remove("send-message-button-actived");
 
     this.#mantenerScrollEnParteInferior();
-
   }
 
   /**

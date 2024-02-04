@@ -388,10 +388,10 @@ document.addEventListener("keydown", (e) => {
  *
  * @param {'click' | 'mousemove' | 'mouseout' | 'mousedown' | 'mouseup' | 'mouseenter' | 'mouseover' | 'touchstart' | 'touchmove' | 'touchend' | 'change' | 'input' | 'keyup' | 'keydown'} typeEvent aqui escoges que tipo de evento quieres agregar, ejemplo: click,mousemove,etc
  * @param {String | HTMLElement} querySelectorOrElement este parametro solicita un selector css para el/los elemento(s) que quieres que se aplique el evento
- * @param {Function} callback funcion que se ejecutara cada vez que se dispare el evento
+ * @param {(e: Event)=>void} callback funcion que se ejecutara cada vez que se dispare el evento
  * @returns devuelve un Id del evento que añadiste, con el cual podras eliminar el evento mediante la funcion eliminarEventoDelegado
  */
-FuncionesDeDelegacion: function delegarEvento(
+function delegarEvento(
   typeEvent,
   querySelectorOrElement,
   callback

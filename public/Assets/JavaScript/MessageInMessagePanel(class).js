@@ -84,12 +84,13 @@ export class MessageInMessagePanel {
       };
     }
 
-    MessageInMessagePanel.currentMessage = this;
-
     if (currentOperationUserInformation) {
       const currentOperationUserInformationObject = JSON.parse(
         currentOperationUserInformation
       );
+
+      this.currentOperationUserInformation =
+        currentOperationUserInformationObject;
 
       this.currentOperationUserInformationID =
         currentOperationUserInformationObject._id;
@@ -144,8 +145,8 @@ export class MessageInMessagePanel {
         if (this.cronometro.forceFinish) {
           this.cronometro.forceFinish();
         } else {
-           finalizarDefinitivamente();
-           return this.finish;
+          finalizarDefinitivamente();
+          return this.finish;
         }
       }
 
@@ -232,6 +233,8 @@ export class MessageInMessagePanel {
       .catch((e) => {
         console.log(e);
       });
+
+    MessageInMessagePanel.currentMessage = this;
   }
 
   desplegarPostMensaje(mensaje = "", duration = 1) {
@@ -251,5 +254,81 @@ export class MessageInMessagePanel {
    */
   static resaltar(duration) {
     return resaltWithBorder(MESSAGE_PANEL, duration);
+  }
+
+  /**
+   * @returns {boolean} devuelve true si hay un mensaje con usuario en el panel o false de lo contrario
+   */
+  static testearMensajeActualConResaltado() {
+    if (
+      MessageInMessagePanel.currentMessage?.currentOperationUserInformationID
+    ) {
+      MessageInMessagePanel.resaltar(0.7);
+      return true;
+    }
+    return false;
+  }
+
+  static casesForFinishCurrentMessage = {
+    "Rejected-for-me": (userID) => {
+      if (
+        userID ==
+        MessageInMessagePanel.currentMessage.currentOperationUserInformationID
+      ) {
+        MessageInMessagePanel.currentMessage.forceFinish(0);
+        return true;
+      }
+      return false;
+    },
+    "Accept-for-me": () => {
+      MessageInMessagePanel.currentMessage.forceFinish(1);
+      return true;
+    },
+
+    /**
+     *
+     * @param {()=>void} callback
+     * @returns
+     */
+    "Reject-any-way": (callback) => {
+      if (
+        MessageInMessagePanel.currentMessage?.currentOperationUserInformationID
+      ) {
+        MessageInMessagePanel.currentMessage
+          .forceFinish(2)
+          .then(() => callback?.());
+      } else if (MessageInMessagePanel.currentMessage) {
+        MessageInMessagePanel.currentMessage
+          .forceFinish(4)
+          .then(() => callback?.());
+      }
+      return true;
+    },
+    /**
+     *
+     * @param {()=>void} callback
+     * @returns
+     */
+    "Finalize-message-UsNF": (callback) => {
+      if (!(MessageInMessagePanel.currentMessage.type === "UsNF")) return false;
+      MessageInMessagePanel.currentMessage
+        .forceFinish(4)
+        .then(() => callback?.());
+      return true;
+    },
+  };
+
+  /**
+   * @param {keyof MessageInMessagePanel.casesForFinishCurrentMessage} casoUso
+   * @param {any} aditionalArguments
+   * @param {boolean} forzar especifica si se debe forzar la terminacion del mensaje si o si, false por defecto
+   * @returns {boolean} devuelve true si es que se logro cancelar con exito y false si es que no se pudo cancelar con exito o si no habia un mensaje actual
+   */
+  static cancelarMensajeActual(casoUso, aditionalArguments, forzar = false) {
+    if (!MessageInMessagePanel.currentMessage) return false;
+
+    return MessageInMessagePanel.casesForFinishCurrentMessage[casoUso](
+      aditionalArguments
+    );
   }
 }
