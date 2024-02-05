@@ -4,7 +4,8 @@
   "description": "Este es un chat para charlar entre varios usuarios",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "execute": "node --env-file .env .\\server.js"
   },
   "author": "",
   "license": "MIT",

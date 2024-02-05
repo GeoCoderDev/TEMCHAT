@@ -282,7 +282,7 @@ socket.on("TAKE-YOUR-MAGNETIC-USER", (aleatoryMagneticUser) => {
   if (!aleatoryMagneticUser) {
     messageInPanel = new MessageInMessagePanel(
       "No se encontraron usuarios con el modo iman activado\u{1F641}",
-      0.7
+      0.7,undefined,undefined,undefined,undefined,undefined,undefined,"UsNF"
     );
   } else {
     const MAGNETIC_ALEATORY_USER = JSON.parse(aleatoryMagneticUser);
@@ -298,9 +298,9 @@ socket.on("TAKE-YOUR-MAGNETIC-USER", (aleatoryMagneticUser) => {
 });
 
 //MODO IMAN
-delegarEvento("change", BOTON_SWITCH_MODO_IMAN, (e) => {
+BOTON_SWITCH_MODO_IMAN.addEventListener("change", (e) => {
   if (!e.target.checked) {
-    MANAGER.ESTADO_ACTUAL = 1;
+    if (!MANAGER.TEMCHAT_ACTUAL) MANAGER.ESTADO_ACTUAL = 1;
 
     activacionDeBotones?.();
     RANDOM_TEMCHAT_TIME_INPUT.removeAttribute("disabled");
@@ -333,6 +333,8 @@ delegarEvento("change", BOTON_SWITCH_MODO_IMAN, (e) => {
 delegarEvento("click", BOTON_CHAT_ALEATORIO_MAGNETICO, (e) => {
   if (MessageInMessagePanel.testearMensajeActualConResaltado()) return;
 
+  let eventId;
+
   const iniciarSolicituMagnetica = () => {
     CONT_MODO_IMAN.setAttribute("disabled", true);
     BOTON_SWITCH_MODO_IMAN.setAttribute("disabled", true);
@@ -343,6 +345,26 @@ delegarEvento("click", BOTON_CHAT_ALEATORIO_MAGNETICO, (e) => {
     MANAGER.CHAT_REQUEST_MAGNETIC = true;
   };
 
+  const terminarSolicitudMagnetica = () => {
+    CONT_MODO_IMAN.removeAttribute("disabled");
+    BOTON_SWITCH_MODO_IMAN.removeAttribute("disabled");
+    e.target.removeAttribute("disabled");
+
+    if (eventId) MANAGER.NuevoChatRequest.removeEventListener(eventId);
+    MANAGER.CHAT_REQUEST_MAGNETIC = false;
+
+    MANAGER.TEMCHAT_ACTUAL = undefined;
+    MANAGER.ESTADO_ACTUAL = 1;
+  };
+
+  let eventIdTemchatFinish;
+
+  eventIdTemchatFinish = MANAGER.TemchatFinish.addEventListener(() => {
+    terminarSolicitudMagnetica();
+    if (eventIdTemchatFinish)
+      MANAGER.TemchatFinish.removeEventListener(eventIdTemchatFinish);
+  });
+
   if (
     !MessageInMessagePanel.cancelarMensajeActual(
       "Finalize-message-UsNF",
@@ -351,8 +373,11 @@ delegarEvento("click", BOTON_CHAT_ALEATORIO_MAGNETICO, (e) => {
   )
     iniciarSolicituMagnetica();
 
-  let eventId = MANAGER.NuevoChatRequest.addEventListener((messageInPanel) => {
+  eventId = MANAGER.NuevoChatRequest.addEventListener((messageInPanel) => {
     messageInPanel.finish.then(() => {
+
+      if(messageInPanel.type==="UsNF") return terminarSolicitudMagnetica();
+
       const MI_USER_DATA = JSON.parse(sessionStorage.getItem("USER-DATA"));
 
       MANAGER.TEMCHAT_ACTUAL = new Temchat(
@@ -360,6 +385,7 @@ delegarEvento("click", BOTON_CHAT_ALEATORIO_MAGNETICO, (e) => {
         messageInPanel.currentOperationUserInformation,
         socket
       );
+      MANAGER.ESTADO_ACTUAL = 0;
 
       // LA UNICA FORMA QUE TEMCHAT FINALICE POR finished, ES PORQUE
       // YO MISMO LOS DECIDI
@@ -368,10 +394,8 @@ delegarEvento("click", BOTON_CHAT_ALEATORIO_MAGNETICO, (e) => {
           "(SERVER)TEMCHAT-FINISHED-FOR-YOU",
           messageInPanel.currentOperationUserInformation.username
         );
-        MANAGER.TEMCHAT_ACTUAL = undefined;
-        MANAGER.ESTADO_ACTUAL = 1;
+        terminarSolicitudMagnetica();
       });
-      
     });
   });
 });
@@ -402,7 +426,14 @@ socket.on("TEMCHAT-REQUEST-ACCEPTED-FOR-YOU", (miUserData, otherUserData) => {
       `${OTHER_DATA_USER.username} ha sido atraido`,
       0.7
     );
-    avisoEnPanel.finish.then(iniciarTemchatObligatoriamente);
+    avisoEnPanel.finish.then(() => {
+      iniciarTemchatObligatoriamente();
+
+      setTimeout(() => {
+        BOTON_SWITCH_MODO_IMAN.checked = false;
+        BOTON_SWITCH_MODO_IMAN.dispatchEvent(new Event("change"));
+      }, 2000);
+    });
   } else {
     iniciarTemchatObligatoriamente();
   }
@@ -413,4 +444,5 @@ socket.on("TEMCHAT-FINISHED-FOR-YOU", () => {
   MANAGER.TEMCHAT_ACTUAL?.finalizarChat?.(false);
   MANAGER.TEMCHAT_ACTUAL = undefined;
   MANAGER.ESTADO_ACTUAL = 1;
+  MANAGER.TemchatFinish.dispatchEvent();
 });

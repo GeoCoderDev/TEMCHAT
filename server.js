@@ -24,7 +24,9 @@ app.set('view engine', 'ejs'); // Configurando la extensión de vista como ".ejs
 app.set('views', path.join(__dirname, 'public', 'views')); // Ruta a las vistas
 
 //Conectando a la Base de datos
-db('mongodb://127.0.0.1:27017/TEMCHAT');
+// db('mongodb://127.0.0.1:27017/TEMCHAT');
+db(process.env.MONGO_DATABASE_URI)
+
 
 //Haciendo uso del router en el servidor como middleware
 routerApp(app);

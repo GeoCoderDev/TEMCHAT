@@ -180,16 +180,6 @@ export class Temchat {
     } else {
       this.#elOtroUsuarioFinalizoElTemchatMESSAGE();
 
-      // desvanecerElementoConScale(
-      //   this.componenteHTML,
-      //   0.4
-      // ).animation.finished.then(() => {
-      //   setTimeout(() => {
-      //     CONTENEDOR_DE_CHAT_EN_VIVO.removeChild(this.componenteHTML);
-      //     abrirPuertas(1);
-      //   }, 500);
-      // });
-
       this.animation.iniciar();
 
       this.animation.finished.then(() => {
@@ -263,12 +253,3 @@ export class Temchat {
   }
 }
 
-// setTimeout(()=>{
-
-//     let TEMCHAT = new Temchat({username:"juan"},{username:"Maria"});
-
-//     // setTimeout(() => {
-//     //     TEMCHAT.finalizarChat();
-//     // }, 8000);
-
-// },3000)

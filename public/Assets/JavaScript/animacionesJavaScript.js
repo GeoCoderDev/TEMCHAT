@@ -223,8 +223,8 @@ function desvanecerElementoConScale(
  */
 
 class AnimacionAparicionYDesaparicion {
-  #promiseFinishedResolve;
-  #promiseAparicionResolve;
+  _promiseFinishedResolve;
+  _promiseAparicionResolve;
   /**
    *
    * @param {HTMLElement} elementoHTML
@@ -365,16 +365,16 @@ class AnimacionAparicionYDesaparicion {
       `);
 
     this.finished = new Promise((resolve, reject) => {
-      this.#promiseFinishedResolve = resolve;
+      this._promiseFinishedResolve = resolve;
     });
 
     this.aparicionFinalizada = new Promise((resolve, reject) => {
-      this.#promiseAparicionResolve = resolve;
+      this._promiseAparicionResolve = resolve;
     });
 
     this.elementoHTML.addEventListener("animationiteration", () => {
       this.pausar();
-      this.#promiseAparicionResolve();
+      this._promiseAparicionResolve();
     });
 
     this.elementoHTML.addEventListener(
@@ -422,7 +422,7 @@ class AnimacionAparicionYDesaparicion {
       eliminarReglasCSSAdicionales(this.estilosCssAdicionales);
     this.estilosCssAdicionales = undefined;
 
-    if (Resolver) this.#promiseFinishedResolve();
+    if (Resolver) this._promiseFinishedResolve();
   }
 }
 
@@ -461,8 +461,8 @@ function aparecerElementoConScale(
 
 class AnimacionAparicionYDesaparicionConScale {
   estilosCssAdicionales;
-  #promiseFinishedResolve;
-  #promiseAparicionResolve;
+  _promiseFinishedResolve;
+  _promiseAparicionResolve;
 
   /**
    *
@@ -527,16 +527,16 @@ class AnimacionAparicionYDesaparicionConScale {
       `);
 
     this.finished = new Promise((resolve) => {
-      this.#promiseFinishedResolve = resolve;
+      this._promiseFinishedResolve = resolve;
     });
 
     this.aparicionFinalizada = new Promise((resolve) => {
-      this.#promiseAparicionResolve = resolve;
+      this._promiseAparicionResolve = resolve;
     });
 
     this.elementoHTML.addEventListener("animationiteration", () => {
       this.pausar();
-      this.#promiseAparicionResolve();
+      this._promiseAparicionResolve();
     });
 
     this.elementoHTML.addEventListener(
@@ -573,7 +573,7 @@ class AnimacionAparicionYDesaparicionConScale {
     if (this.estilosCssAdicionales)
       eliminarReglasCSSAdicionales(this.estilosCssAdicionales);
 
-    if (Resolver) this.#promiseFinishedResolve();
+    if (Resolver) this._promiseFinishedResolve();
   }
 }
 

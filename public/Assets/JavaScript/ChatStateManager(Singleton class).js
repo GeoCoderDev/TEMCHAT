@@ -17,6 +17,8 @@ export class ChatStateManager {
 
   NuevoChatRequest = new ChatEvent();  
 
+  TemchatFinish = new ChatEvent();
+
   set ESTADO_ACTUAL(state) {
     this.#ESTADO_ACTUAL = state;
     socket.emit("CHANGE-STATE", state);
