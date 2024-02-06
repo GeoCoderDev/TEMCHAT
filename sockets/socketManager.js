@@ -4,6 +4,10 @@ const {
 } = require("mongoose");
 const temporaryUsersController = require("../components/temporaryUsers/controller");
 
+const CustomEvent = require("../utils/CustomEvent(Class)");
+
+const SEGUNDOS_TOLERANCIA = 5.5;
+
 /**
  *
  * @param {Server} server
@@ -33,6 +37,8 @@ function socketManager(server) {
           socket.emit("TAKE-YOUR-USER-DATA", JSON.stringify(MI_USER_DATA));
 
           console.log(`${MI_USER_DATA.username} conectado`);
+
+          const REQUEST_RECEIVED_EVENT = new CustomEvent();
 
           socket.on("GET-ALEATORY-USER", (pendingRequestsIDs) => {
             let Pending_Requests_IDs = pendingRequestsIDs
@@ -80,43 +86,14 @@ function socketManager(server) {
               });
           });
 
-          socket.on("(SERVER)TEMCHAT-ACCEPTED-FOR-YOU", (username) => {
-            temporaryUsersController
-              .getUserByUsername(username)
-              .then((user) => {
-                if (!user) return;
-
-                socket
-                  .to(user.socketConectionID)
-                  .emit(
-                    "TEMCHAT-REQUEST-ACCEPTED-FOR-YOU",
-                    JSON.stringify(user),
-                    JSON.stringify(MI_USER_DATA)
-                  );
-              });
-          });
-
-          socket.on(
-            "(SERVER)MESSAGE-FOR-YOU",
-            (usernameDestinataryUser, content) => {
-              temporaryUsersController
-                .getUserByUsername(usernameDestinataryUser)
-                .then((user) => {
-                  if (!user) return;
-
-                  socket
-                    .to(user.socketConectionID)
-                    .emit("MESSAGE-FOR-YOU", content);
-                });
-            }
-          );
-
           socket.on(
             "(SERVER)REQUEST-FOR-X-USER",
             (usernameOfUser, type, waitTime) => {
               temporaryUsersController
                 .getUserByUsername(usernameOfUser)
                 .then((userFound) => {
+                  if (!userFound) return; //Se puede hacer algo todavia aca
+
                   socket
                     .to(userFound.socketConectionID)
                     .emit(
@@ -125,9 +102,52 @@ function socketManager(server) {
                       type,
                       waitTime
                     );
+
+                  //Promesa de recibimiento
+                  const promiseOfReceipt = new Promise((resolve, reject) => {
+                    let eventID;
+
+                    eventID = REQUEST_RECEIVED_EVENT.addEventListener(
+                      (username) => {
+                        if (userFound.username === username) {
+                          resolve();
+                          if (eventID)
+                            REQUEST_RECEIVED_EVENT.removeEventListener(eventID);
+                        }
+                      }
+                    );
+
+                    setTimeout(() => {
+                      reject();
+                      if (eventID)
+                        REQUEST_RECEIVED_EVENT.removeEventListener(eventID);
+                    }, SEGUNDOS_TOLERANCIA * 1000);
+                  });
+
+                  promiseOfReceipt.catch(() => {
+                    temporaryUsersController.setDisconectionsAmount(userFound._id,
+                      userFound.disconectionsAmount + 1
+                    );
+                  });
                 });
             }
           );
+
+          socket.on("REQUEST-RECEIVED", (username) => {
+            REQUEST_RECEIVED_EVENT.dispatchEvent(username);
+          });
+
+          socket.on("(SERVER)REQUEST-RECEIVED", (username) => {
+            if (!username) return;
+
+            temporaryUsersController
+              .getUserByUsername(username)
+              .then((userfound) => {
+                socket
+                  .to(userfound.socketConectionID)
+                  .emit("REQUEST-RECEIVED", userfound.username);
+              });
+          });
 
           socket.on("(SERVER)CANCEL-REQUEST-FOR-X-USER", (username) => {
             if (!username) return;
@@ -159,6 +179,37 @@ function socketManager(server) {
                   );
               });
           });
+
+          socket.on("(SERVER)TEMCHAT-ACCEPTED-FOR-YOU", (username) => {
+            temporaryUsersController
+              .getUserByUsername(username)
+              .then((user) => {
+                if (!user) return;
+
+                socket
+                  .to(user.socketConectionID)
+                  .emit(
+                    "TEMCHAT-REQUEST-ACCEPTED-FOR-YOU",
+                    JSON.stringify(user),
+                    JSON.stringify(MI_USER_DATA)
+                  );
+              });
+          });
+
+          socket.on(
+            "(SERVER)MESSAGE-FOR-YOU",
+            (usernameDestinataryUser, content) => {
+              temporaryUsersController
+                .getUserByUsername(usernameDestinataryUser)
+                .then((user) => {
+                  if (!user) return;
+
+                  socket
+                    .to(user.socketConectionID)
+                    .emit("MESSAGE-FOR-YOU", content);
+                });
+            }
+          );
 
           socket.on("(SERVER)TEMCHAT-FINISHED-FOR-YOU", (username) => {
             console.log(username);

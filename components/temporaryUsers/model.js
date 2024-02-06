@@ -23,6 +23,12 @@ let temporaryUserSchema = new Shema({
         type: String,
         require:false,
         validate: (value) => (value!==null&&value!=="")
+    },
+
+    disconectionsAmount: {
+        type: Number,
+        require: true,
+        default: 0
     }
 
 })

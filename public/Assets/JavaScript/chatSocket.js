@@ -47,9 +47,10 @@ socket.on(
     const waitTime = parseFloat(waitTimeRequest);
 
     if (ChatRequest.allRequests.has(REQUESTER_DATA._id)) return;
+
     const chatRequest = new ChatRequest(REQUESTER_DATA, waitTime);
 
-    socket.emit("(SERVER)REQUEST-RECEIVED", JSON.stringify(MI_USER_DATA));
+    socket.emit("(SERVER)REQUEST-RECEIVED", REQUESTER_DATA.username);
 
     if (MANAGER.ESTADO_ACTUAL == 2) {
       // ACEPTAR SI O SI
@@ -94,7 +95,7 @@ socket.on(
 );
 
 socket.on("TEMCHAT-REJECTED-FOR-YOU", (userInfo) => {
-  const USER_INFO = JSON.parse(userInfo);
+  const USER_INFO = JSON.parse(userInfo);  
   MessageInMessagePanel.cancelarMensajeActual("Rejected-for-me", USER_INFO._id);
 });
 

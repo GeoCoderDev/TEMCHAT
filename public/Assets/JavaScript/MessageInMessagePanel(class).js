@@ -31,6 +31,7 @@ export class MessageInMessagePanel {
     mostrarDuracion = false,
     type = "unknow"
   ) {
+    MessageInMessagePanel.currentMessage = this;
     const mensajeHTML = document.createElement("div");
     mensajeHTML.classList.add("mesagge-in-panel");
     mensajeHTML.style.position = "absolute";
@@ -189,7 +190,6 @@ export class MessageInMessagePanel {
           cancelButtonHTML.addEventListener("click", (e) => {
             // if(!UserFound.userFoundRequestedCurrent) return;
             e.target.setAttribute("disabled", true);
-            console.log(e.target);
             finalizarMensaje(2);
           });
         }
@@ -233,8 +233,7 @@ export class MessageInMessagePanel {
       .catch((e) => {
         console.log(e);
       });
-
-    MessageInMessagePanel.currentMessage = this;
+    
   }
 
   desplegarPostMensaje(mensaje = "", duration = 1) {
@@ -272,8 +271,8 @@ export class MessageInMessagePanel {
   static casesForFinishCurrentMessage = {
     "Rejected-for-me": (userID) => {
       if (
-        userID ==
-        MessageInMessagePanel.currentMessage.currentOperationUserInformationID
+        MessageInMessagePanel.currentMessage
+          .currentOperationUserInformationID === userID
       ) {
         MessageInMessagePanel.currentMessage.forceFinish(0);
         return true;

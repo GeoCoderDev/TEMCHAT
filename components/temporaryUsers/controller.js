@@ -1,10 +1,11 @@
-const MaximaCantidadDeUsuariosConectados = 10;
+const Maxima_Cantidad_Usuarios_Conectados = 10;
+const Cantidad_Maxima_Desconexiones = 2;
 const store = require("./store");
 
 async function addTemporaryUser(username) {
   try {
     let numeroDeUsuariosActivos = await store.getUsersAmount();
-    if (numeroDeUsuariosActivos == MaximaCantidadDeUsuariosConectados) {
+    if (numeroDeUsuariosActivos == Maxima_Cantidad_Usuarios_Conectados) {
       const error = new Error("Cantidad de Usuarios Maxima alcanzada");
       error.name = "MAX-USERS";
       throw error;
@@ -72,9 +73,9 @@ async function getUserByUsername(username) {
 }
 
 /**
- * 
- * @param {string[]} idsExcept 
- * @returns 
+ *
+ * @param {string[]} idsExcept
+ * @returns
  */
 async function getAleatoryUser(idsExcept, estadoAFiltrar) {
   try {
@@ -87,6 +88,18 @@ async function getAleatoryUser(idsExcept, estadoAFiltrar) {
 async function setSocketIdConnection(id, socketConectionID) {
   try {
     store.setSocketIdConnection(id, socketConectionID);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function setDisconectionsAmount(id, newAmount) {
+  try {
+    console.log(typeof newAmount);
+    if (newAmount > Cantidad_Maxima_Desconexiones)
+      return deleteTemporaryUser(id);
+
+    store.setDisconectionsAmount(id, newAmount);
   } catch (error) {
     throw error;
   }
@@ -108,7 +121,6 @@ async function getSocketIDByID(userID) {
   }
 }
 
-
 function hasOnlySpaces(string) {
   const regex = /^\s*$/; // Expresión regular que coincide con espacios en blanco en un string
   return regex.test(string);
@@ -123,4 +135,5 @@ module.exports = {
   setSocketIdConnection: setSocketIdConnection,
   changeState: changeState,
   getSocketIDByID: getSocketIDByID,
+  setDisconectionsAmount,
 };

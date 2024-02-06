@@ -110,19 +110,33 @@ async function setState(id, state) {
 }
 
 /**
+ * 
+ * @param {string} id 
+ * @param {number} newAmount 
+ */
+async function setDisconectionsAmount(id, newAmount) {
+  try {
+    await temporaryUser.updateOne(
+      { _id: id },
+      { $set: { disconectionsAmount: newAmount } }
+    );
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
  *
  * @param {string[]} idsExcept
  * @returns
  */
 async function getAleatoryUser(idsExcept = [], estadoAFiltrar = 1) {
-
   try {
     return await temporaryUser.aggregate([
       { $match: { _id: { $nin: idsExcept } } }, // Excepciones para el _id
       { $match: { state: { $in: [estadoAFiltrar] } } }, // Filtrar por estado
       { $sample: { size: 1 } }, // Seleccionar un documento aleatorio de los resultados
     ]);
-
   } catch (error) {
     throw error;
   }
@@ -154,4 +168,5 @@ module.exports = {
   setState: setState,
   getAleatoryUser: getAleatoryUser,
   getSocketIDByID: getSocketIDByID,
+  setDisconectionsAmount
 };
