@@ -233,7 +233,6 @@ export class MessageInMessagePanel {
       .catch((e) => {
         console.log(e);
       });
-    
   }
 
   desplegarPostMensaje(mensaje = "", duration = 1) {
@@ -293,9 +292,9 @@ export class MessageInMessagePanel {
       if (
         MessageInMessagePanel.currentMessage?.currentOperationUserInformationID
       ) {
-        MessageInMessagePanel.currentMessage
-          .forceFinish(2)
-          .then(() => callback?.());
+        MessageInMessagePanel.currentMessage.forceFinish(2).then(() => {
+          callback?.();
+        });
       } else if (MessageInMessagePanel.currentMessage) {
         MessageInMessagePanel.currentMessage
           .forceFinish(4)
@@ -310,6 +309,12 @@ export class MessageInMessagePanel {
      */
     "Finalize-message-UsNF": (callback) => {
       if (!(MessageInMessagePanel.currentMessage.type === "UsNF")) return false;
+      MessageInMessagePanel.currentMessage
+        .forceFinish(4)
+        .then(() => callback?.());
+      return true;
+    },
+    "Finalize-message-any-type": (callback) => {
       MessageInMessagePanel.currentMessage
         .forceFinish(4)
         .then(() => callback?.());

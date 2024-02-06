@@ -95,15 +95,19 @@ socket.on(
 );
 
 socket.on("USER-NO-LONGER-EXIST", (username) =>
-  MessageInMessagePanel.cancelarMensajeActual(
-    "Reject-any-way",
-    () => new MessageInMessagePanel(`${username} se desconecto`, 0.7)
-  )
+  setTimeout(() => {
+    MessageInMessagePanel.cancelarMensajeActual(
+      "Finalize-message-any-type",
+      () => {
+        new MessageInMessagePanel(`${username} se desconecto`, 2);
+      }
+    );
+  }, 500)
 );
 
-socket.on("REQUEST-RECEIVED",(username)=>{
-  socket.emit("(SERVER)REQUEST-RECEIVED-WAS-RECEIVED",username)
-})
+socket.on("REQUEST-RECEIVED", (username) => {
+  socket.emit("(SERVER)REQUEST-RECEIVED-WAS-RECEIVED", username);
+});
 
 socket.on("TEMCHAT-REJECTED-FOR-YOU", (userInfo) => {
   const USER_INFO = JSON.parse(userInfo);
