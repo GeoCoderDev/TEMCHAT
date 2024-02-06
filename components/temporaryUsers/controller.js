@@ -95,7 +95,6 @@ async function setSocketIdConnection(id, socketConectionID) {
 
 async function setDisconectionsAmount(id, newAmount) {
   try {
-    console.log(typeof newAmount);
     if (newAmount > Cantidad_Maxima_Desconexiones)
       return deleteTemporaryUser(id);
 

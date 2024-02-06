@@ -37,6 +37,14 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
+// window.addEventListener("pageshow", ()=>{
+//   socket.emit("MY-USERNAME", myUsername);
+// })
+
+socket.on("YOUR-USER-NO-LONGER-EXIST",()=>{
+  location = location.origin;
+})
+
 let altoPantallaVisible;
 const variableName = "--Alto-Pantalla-Visible";
 

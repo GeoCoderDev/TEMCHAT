@@ -94,8 +94,19 @@ socket.on(
   }
 );
 
+socket.on("USER-NO-LONGER-EXIST", (username) =>
+  MessageInMessagePanel.cancelarMensajeActual(
+    "Reject-any-way",
+    () => new MessageInMessagePanel(`${username} se desconecto`, 0.7)
+  )
+);
+
+socket.on("REQUEST-RECEIVED",(username)=>{
+  socket.emit("(SERVER)REQUEST-RECEIVED-WAS-RECEIVED",username)
+})
+
 socket.on("TEMCHAT-REJECTED-FOR-YOU", (userInfo) => {
-  const USER_INFO = JSON.parse(userInfo);  
+  const USER_INFO = JSON.parse(userInfo);
   MessageInMessagePanel.cancelarMensajeActual("Rejected-for-me", USER_INFO._id);
 });
 
@@ -283,7 +294,14 @@ socket.on("TAKE-YOUR-MAGNETIC-USER", (aleatoryMagneticUser) => {
   if (!aleatoryMagneticUser) {
     messageInPanel = new MessageInMessagePanel(
       "No se encontraron usuarios con el modo iman activado\u{1F641}",
-      0.7,undefined,undefined,undefined,undefined,undefined,undefined,"UsNF"
+      0.7,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      "UsNF"
     );
   } else {
     const MAGNETIC_ALEATORY_USER = JSON.parse(aleatoryMagneticUser);
@@ -376,8 +394,7 @@ delegarEvento("click", BOTON_CHAT_ALEATORIO_MAGNETICO, (e) => {
 
   eventId = MANAGER.NuevoChatRequest.addEventListener((messageInPanel) => {
     messageInPanel.finish.then(() => {
-
-      if(messageInPanel.type==="UsNF") return terminarSolicitudMagnetica();
+      if (messageInPanel.type === "UsNF") return terminarSolicitudMagnetica();
 
       const MI_USER_DATA = JSON.parse(sessionStorage.getItem("USER-DATA"));
 

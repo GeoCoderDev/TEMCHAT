@@ -23,6 +23,9 @@ function socketManager(server) {
       temporaryUsersController
         .getUserByUsername(username)
         .then((usuarioEncontrado) => {
+          if (!usuarioEncontrado)
+            return socket.emit("YOUR-USER-NO-LONGER-EXIST");
+
           MI_USER_DATA = usuarioEncontrado;
 
           temporaryUsersController
@@ -92,7 +95,8 @@ function socketManager(server) {
               temporaryUsersController
                 .getUserByUsername(usernameOfUser)
                 .then((userFound) => {
-                  if (!userFound) return; //Se puede hacer algo todavia aca
+                  if (!userFound)
+                    return socket.emit("USER-NO-LONGER-EXIST", usernameOfUser); //Se puede hacer algo todavia aca
 
                   socket
                     .to(userFound.socketConectionID)
@@ -125,7 +129,8 @@ function socketManager(server) {
                   });
 
                   promiseOfReceipt.catch(() => {
-                    temporaryUsersController.setDisconectionsAmount(userFound._id,
+                    temporaryUsersController.setDisconectionsAmount(
+                      userFound._id,
                       userFound.disconectionsAmount + 1
                     );
                   });
@@ -133,9 +138,9 @@ function socketManager(server) {
             }
           );
 
-          socket.on("REQUEST-RECEIVED", (username) => {
-            REQUEST_RECEIVED_EVENT.dispatchEvent(username);
-          });
+          socket.on("(SERVER)REQUEST-RECEIVED-WAS-RECEIVED", (username) =>
+            REQUEST_RECEIVED_EVENT.dispatchEvent(username)
+          );
 
           socket.on("(SERVER)REQUEST-RECEIVED", (username) => {
             if (!username) return;
@@ -145,7 +150,7 @@ function socketManager(server) {
               .then((userfound) => {
                 socket
                   .to(userfound.socketConectionID)
-                  .emit("REQUEST-RECEIVED", userfound.username);
+                  .emit("REQUEST-RECEIVED", MI_USER_DATA.username);
               });
           });
 
