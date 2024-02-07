@@ -1,4 +1,4 @@
-const Maxima_Cantidad_Usuarios_Conectados = 10;
+const Maxima_Cantidad_Usuarios_Conectados = 100;
 const Cantidad_Maxima_Desconexiones = 2;
 const store = require("./store");
 

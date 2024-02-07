@@ -1,17 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERROR</title>
-    <link rel="stylesheet" href="../../Assets/CSS/index.css">
-</head>
-<body>
-    
-    <h1>OCURRIO UN ERROR</h1>
-    
-    <%= errorMessage %>    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-</body>
+    <% if (typeof tittlePage !== "undefined") { %>
+    <title><%= tittlePage %></title>
+    <% } else { %>
+    <tittle>Error</tittle>
+    <% } %>
+
+    <link
+      rel="shortcut icon"
+      href="/Assets/Images/Logo con Borde mas Grueso con fondo.svg"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="Assets/CSS/index.css" />
+    <link rel="stylesheet" href="Assets/CSS/Error.css" />
+  </head>
+  <body>
+    <div class="cont-messages">
+      <h1><%= errorMessage %></h1>
+
+      <h3 class="sub-message"><%= errorSubMessage %></h3>
+    </div>
+
+    <%if(imageError!==false){%>
+    <div class="cont-image"></div>
+    <%}%>
+
+    <script>
+      let altoPantallaVisible;
+      const variableName = "--Alto-Pantalla-Visible";
+
+      window.addEventListener("load", () => {
+        // Seteando propiedad de alto pantalla visible
+        altoPantallaVisible =
+          window.visualViewport[
+            window.matchMedia("screen and(orientation: landscape)").matches
+              ? "width"
+              : "height"
+          ] + "px";
+
+        document.documentElement.style.setProperty(
+          variableName,
+          altoPantallaVisible
+        );
+      });
+
+      window.addEventListener("resize", () => {
+        altoPantallaVisible =
+          window.visualViewport[
+            window.matchMedia("screen and(orientation: landscape)").matches
+              ? "width"
+              : "height"
+          ] + "px";
+
+        if (parseFloat(window.innerHeight) > parseFloat(altoPantallaVisible)) {
+          document.documentElement.style.setProperty(
+            variableName,
+            window.innerHeight + "px"
+          );
+        } else {
+          document.documentElement.style.setProperty(
+            variableName,
+            altoPantallaVisible
+          );
+        }
+      });
+    </script>
+  </body>
 </html>
-

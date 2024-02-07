@@ -1,0 +1,62 @@
+html {
+  display: flex;
+  justify-content: center;
+}
+
+body {
+  background-color: var(--color-fondo-pagina);
+  gap: 3.5%;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: var(--Alto-Pantalla-Visible);
+  color: var(--color-logo);
+}
+
+h1 {
+  font-size: 4rem;
+  text-align: center;
+}
+
+h3 {
+  font-size: 1.4rem;
+}
+
+.sub-message {
+  max-width: 40vw;
+  text-align: center;
+}
+
+.cont-messages {
+  /* border: 1px solid #000; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5vh;
+  /* width: 80vw; */
+}
+
+.cont-image {
+  /* border: 1px solid #000; */
+  width: 30%;
+  background-image: url("/Assets/Images/Logo\ TEMCHAT\ con\ Lupa.svg");
+  aspect-ratio: 1/1;
+  background-size: contain;
+}
+
+@media screen and (orientation: portrait) {
+  body {
+    flex-direction: column;
+    justify-content: center;
+    gap: 5%;
+  }
+
+  .cont-image {
+    width: 65%;
+  }
+
+  .sub-message {
+    width: 70vw;
+  }
+}
